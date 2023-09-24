@@ -1,27 +1,30 @@
 ﻿using System;
-using MusicTheory.Scales;
 using MusicTheory.ScaleDegrees;
 using MusicTheory.Steps;
+using MusicTheory.Modes;
 
 namespace MusicTheory.Scales
 {
     public abstract class Scale
     {
-        public Scale(ScaleEnum @enum, ModeDegreeEnum mode, Step[] steps, ScaleDegree[] degrees)
+        public Scale(ScaleEnum @enum, Mode[] modes, Step[] steps, ScaleDegree[] degrees)
         {
             Enum = @enum;
-            // Mode = mode;
+            Modes = modes;
             Steps = steps;
             ScaleDegrees = degrees;
         }
 
         public ScaleEnum Enum { get; protected set; }
-        // public ModeDegree Mode { get; protected set; } = ModeDegreeEnum.Prime;
+        public Mode[] Modes { get; protected set; }
         public Step[] Steps { get; protected set; }
         public ScaleDegree[] ScaleDegrees { get; protected set; }
+
+        public string Description => Enum.Description;
         public string Name => Enum.Name;
         public int Id => Enum.Id;
         public static Scale operator ++(Scale a) => (Scale)((a.Id + 1) % Enumeration.ListAll<ScaleEnum>().Count);
+
         // public static explicit operator Scale(Scale a, int i) => (Scale)(a.Id + i % Enumeration.ListAll<ScaleEnum>().Count);
         // public static int operator +(Scale a, int b) => a.Id + b % Enumeration.ListAll<ScaleEnum>().Count;
         // public static int operator -(Scale a, int b) => a.Id - b % Enumeration.ListAll<ScaleEnum>().Count;
@@ -33,9 +36,9 @@ namespace MusicTheory.Scales
     {
         public Major() : base(
            @enum: ScaleEnum.Major,
-           mode: ModeDegreeEnum.Prime,
+           modes: new Mode[] { new Ionian(), new Dorian(), new Phrygian(), new Lydian(), new MixoLydian(), new Aeolian(), new Locrian() },
            steps: new Step[] { new Whole(), new Whole(), new Half(), new Whole(), new Whole(), new Whole(), new Half() },
-           degrees: new ScaleDegree[] { new _1(), new _2(), new _3(), new P4(), new P5(), new _6(), new _7() })
+           degrees: new ScaleDegree[] { new _1(), new _2(), new _3(), new P4(), new P5(), new _6(), new _7(), })
         { }
     }
 
@@ -44,7 +47,7 @@ namespace MusicTheory.Scales
         public JazzMinor() : base(
 
             @enum: ScaleEnum.JazzMinor,
-            mode: ModeDegreeEnum.Prime,
+            modes: new Mode[] { new JazzI(), new JazzII(), new JazzIII(), new JazzIV(), new JazzV(), new JazzVI(), new JazzVII() },
             steps: new Step[] { new Whole(), new Half(), new Whole(), new Whole(), new Whole(), new Whole(), new Half() },
             degrees: new ScaleDegree[] { new _1(), new _2(), new b3(), new P4(), new P5(), new _6(), new _7() })
         { }
@@ -54,7 +57,7 @@ namespace MusicTheory.Scales
     {
         public HarmonicMinor() : base(
             @enum: ScaleEnum.HarmonicMinor,
-            mode: ModeDegreeEnum.Prime,
+            modes: new Mode[] { new HarmonicI(), new HarmonicII(), new HarmonicIII(), new HarmonicIV(), new HarmonicV(), new HarmonicVI(), new HarmonicVII() },
             steps: new Step[] { new Whole(), new Half(), new Whole(), new Whole(), new Half(), new Augmented(), new Half() },
             degrees: new ScaleDegree[] { new _1(), new _2(), new b3(), new P4(), new P5(), new b6(), new _7() })
         { }
@@ -64,19 +67,29 @@ namespace MusicTheory.Scales
     {
         public WholeTone() : base(
             @enum: ScaleEnum.WholeTone,
-            mode: ModeDegreeEnum.Prime,
+            modes: new Mode[] { new Modes.WholeTone() },
             steps: new Step[] { new Whole(), new Whole(), new Whole(), new Whole(), new Whole(), new Whole() },
-            degrees: new ScaleDegree[] { new _1(), new _2(), new _3(), new b5(), new b6(), new b7() })
+            degrees: new ScaleDegree[] { new _1(), new _2(), new _3(), new s4(), new s5(), new b7() })
         { }
     }
 
-    public class OctaTonic : Scale
+    public class Diminished : Scale
     {
-        public OctaTonic() : base(
-            @enum: ScaleEnum.OctaTonic,
-            mode: ModeDegreeEnum.Prime,
+        public Diminished() : base(
+            @enum: ScaleEnum.Diminished,
+            modes: new Mode[] { new Modes.Diminished(), new Octatonic() },
             steps: new Step[] { new Whole(), new Half(), new Whole(), new Half(), new Whole(), new Half(), new Whole(), new Half() },
             degrees: new ScaleDegree[] { new _1(), new _2(), new b3(), new P4(), new b5(), new b6(), new _6(), new _7() })
+        { }
+    }
+
+    public class Diminished6th : Scale
+    {
+        public Diminished6th() : base(
+           @enum: ScaleEnum.Diminished6th,
+           modes: new Mode[] { new Modes.Diminished6th(), new Diminished6thII() },
+           steps: new Step[] { new Whole(), new Whole(), new Half(), new Whole(), new Half(), new Half(), new Whole(), new Half() },
+           degrees: new ScaleDegree[] { new _1(), new _2(), new _3(), new P4(), new P5(), new b6(), new _6(), new _7(), })
         { }
     }
 
@@ -84,7 +97,7 @@ namespace MusicTheory.Scales
     {
         public Chromatic() : base(
             @enum: ScaleEnum.Chromatic,
-            mode: ModeDegreeEnum.Prime,
+            modes: new Mode[] { new Modes.Chromatic() },
             steps: new[] { new Half(), new Half(), new Half(), new Half(), new Half(), new Half(), new Half(), new Half(), new Half(), new Half(), new Half(), new Half(), },
             degrees: new ScaleDegree[] { new _1(), new b2(), new _2(), new b3(), new _3(), new P4(), new b5(), new P5(), new b6(), new _6(), new b7(), new _7() })
         { }
@@ -94,35 +107,39 @@ namespace MusicTheory.Scales
     {
         public PentaTonic() : base(
             @enum: ScaleEnum.PentaTonic,
-            mode: ModeDegreeEnum.Prime,
+            modes: new Mode[] { new PentatonicMajor(), new PentatonicII(), new PentatonicIII(), new PentatonicIV(), new PentatonicMinor() },
             steps: new Step[] { new Whole(), new Whole(), new Augmented(), new Whole(), new Augmented() },
             degrees: new ScaleDegree[] { new _1(), new _2(), new _3(), new P5(), new _6() })
         { }
     }
+
     #endregion SCALES
 
     public class ScaleEnum : Enumeration
     {
         public ScaleEnum() : base(0, "") { }
-        public ScaleEnum(int id, string name) : base(id, name) { }
+        public ScaleEnum(int id, string name, string desc) : base(id, name) { Description = desc; }
+        public readonly string Description;
 
-        public static ScaleEnum Major = new(0, nameof(Major));
-        public static ScaleEnum JazzMinor = new(1, nameof(JazzMinor));
-        public static ScaleEnum HarmonicMinor = new(2, nameof(HarmonicMinor));
-        public static ScaleEnum WholeTone = new(3, nameof(WholeTone));
-        public static ScaleEnum OctaTonic = new(4, nameof(OctaTonic));
-        public static ScaleEnum Chromatic = new(5, nameof(Chromatic));
-        public static ScaleEnum PentaTonic = new(6, nameof(PentaTonic));
+        public static ScaleEnum Major = new(0, "∆", nameof(Major));
+        public static ScaleEnum JazzMinor = new(1, "∆-", nameof(JazzMinor));
+        public static ScaleEnum HarmonicMinor = new(2, "∆±", nameof(HarmonicMinor));
+        public static ScaleEnum WholeTone = new(3, "+", nameof(WholeTone));
+        public static ScaleEnum Diminished = new(4, "º", nameof(Diminished));
+        public static ScaleEnum Diminished6th = new(5, "º6", nameof(Diminished6th));
+        public static ScaleEnum Chromatic = new(6, "∞", nameof(Chromatic));
+        public static ScaleEnum PentaTonic = new(7, "∑", nameof(PentaTonic));
 
-        public static implicit operator Scale(ScaleEnum k) => k switch
+        public static implicit operator Scale(ScaleEnum s) => s switch
         {
-            _ when k == ScaleEnum.Major => new Major(),
-            _ when k == ScaleEnum.JazzMinor => new JazzMinor(),
-            _ when k == ScaleEnum.HarmonicMinor => new HarmonicMinor(),
-            _ when k == ScaleEnum.OctaTonic => new OctaTonic(),
-            _ when k == ScaleEnum.WholeTone => new WholeTone(),
-            _ when k == ScaleEnum.Chromatic => new Chromatic(),
-            _ when k == ScaleEnum.PentaTonic => new PentaTonic(),
+            _ when s == Major => new Major(),
+            _ when s == JazzMinor => new JazzMinor(),
+            _ when s == HarmonicMinor => new HarmonicMinor(),
+            _ when s == Diminished => new Diminished(),
+            _ when s == WholeTone => new WholeTone(),
+            _ when s == Diminished6th => new Diminished6th(),
+            _ when s == Chromatic => new Chromatic(),
+            _ when s == PentaTonic => new PentaTonic(),
             _ => throw new ArgumentOutOfRangeException()
         };
     }

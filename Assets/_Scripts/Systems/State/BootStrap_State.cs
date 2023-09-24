@@ -22,5 +22,6 @@ public class BootStrap_State : State
     {
         //SetStateDirectly(new IntroMenuState());
         SetStateDirectly(new TheoryPuzzleState());
+        //SetStateDirectly(new MusicTheoryTest_State());
     }
 }

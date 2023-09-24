@@ -2,6 +2,7 @@
 using MusicTheory.ScaleDegrees;
 using MusicTheory.Steps;
 using MusicTheory.Keys;
+using MusicTheory.Modes;
 
 namespace MusicTheory.Scales
 {
@@ -19,34 +20,42 @@ namespace MusicTheory.Scales
             return newSteps;
         }
 
-        public static ScaleDegree[] ShiftDegrees(this Scale scale, ModeDegreeEnum mode)
-        {
-            Step[] newSteps = scale.ShiftSteps(mode);
+        //public static ScaleDegree[] ShiftDegrees(this Scale scale, ModeDegreeEnum mode)
+        //{
+        //    Step[] newSteps = scale.ShiftSteps(mode);
 
-            ScaleDegree[] newDegrees = new ScaleDegree[scale.ScaleDegrees.Length];
-            newDegrees[0] = new _1();
+        //    ScaleDegree[] newDegrees = new ScaleDegree[scale.ScaleDegrees.Length];
+        //    newDegrees[0] = new _1();
 
-            for (int i = 1; i < newDegrees.Length; i++)
-            {
-                newDegrees[i] = scale.ScaleDegrees[i].StepUp(newSteps[i - 1]);
-            }
+        //    for (int i = 1; i < newDegrees.Length; i++)
+        //    {
+        //        newDegrees[i] = scale.ScaleDegrees[i].StepUp(newSteps[i - 1]);
+        //    }
 
-            return newDegrees;
-        }
+        //    return newDegrees;
+        //}
 
-        public static Key Above(this ScaleDegree s, Key key)
-        {
-            UnityEngine.Debug.Log("S: " + (int)s + ", Key: " + (int)key + ", " + ((int)key + (int)s) % 12);
-            return (Key)(((int)key + (int)s) % 12);
-        }
+        //public static Key Above(this ScaleDegree s, Key key)
+        //{
+        //    //switch (s)
+        //    //{
+        //    //    case 
+        //    //}
+        //    return new A();// (Key)(((int)key + (int)s) % 12);
+        //}
 
-        public static ScaleDegree StepUp(this ScaleDegree sd, Step step)
-        {
-            if ((int)sd > 11)
-                throw new ArgumentOutOfRangeException(nameof(ScaleDegree), "Scale degree must not be greater than 11");
+        //public static ScaleDegree StepUp(this ScaleDegree sd, Step step)
+        //{
+        //    if ((int)sd > 11)
+        //        throw new ArgumentOutOfRangeException(nameof(ScaleDegree), "Scale degree must not be greater than 11");
 
-            return (ScaleDegree)((int)sd + (int)step);
-        }
+        //    return (ScaleDegree)((int)sd + (int)step);
+        //}
+
+        //public static Key GetNote(this ScaleDegree scaleDegree, Key key)
+        //{
+        //    return (Key)(key + scaleDegree);
+        //}
     }
 
 }

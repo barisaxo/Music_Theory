@@ -19,7 +19,29 @@ namespace MusicTheory
         public Key CurrentKey { get; set; }
         public CircleType Type;
 
-        public void ScrollKey(Interval delta) { CurrentKey = (Key)(((int)CurrentKey + (int)delta) % 12); }
+        public Key ScrollKey(Interval delta)
+        {
+            this.RotateCounterClockwise();
+            CurrentKey = (Key)(((int)CurrentKey + (int)delta) % 12);
+            foreach (var key in Enumeration.ListAll<KeyEnum>())
+            {
+                if (key.Letter.Equals(((Key)(((int)CurrentKey + 1) % 12)).Enum.Letter) && key.Id == CurrentKey.Id)
+                {
+                    if (key.Accidental is Sharp)
+                    {
+                        foreach (var k in Enumeration.ListAll<KeyEnum>())
+                        {
+                            if (k.Letter.Equals(((Key)(((int)key + 1) % 12)).Enum.Letter) && key.Id == key.Id)
+                            {
+                                return CurrentKey = k;
+                            }
+                        }
+                    }
+                    return CurrentKey = key;
+                }
+            }
+            return CurrentKey;
+        }
 
         private string[] GetPointNames() => Type switch
         {
@@ -34,7 +56,21 @@ namespace MusicTheory
 
             for (int i = 0; i < temp.Length; i++)
             {
-                temp[i] = ((Key)(((int)CurrentKey + (i * 7)) % 12)).ToString();
+                Key fifth = ((Key)(((int)CurrentKey + (i * 7)) % 12));
+
+                if (fifth.Enum.Accidental is Sharp)
+                {
+                    foreach (var key in Enumeration.ListAll<KeyEnum>())
+                    {
+                        if (key.Letter.Equals(((Key)(((int)fifth + 1) % 12)).Enum.Letter) && key.Id == fifth.Id)
+                        {
+                            fifth = key;
+                            break;
+                        }
+                    }
+                }
+
+                temp[i] = fifth.Name;
             }
 
             return temp;

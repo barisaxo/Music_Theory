@@ -3,6 +3,7 @@ using MusicTheory.Keys;
 using MusicTheory.Scales;
 using MusicTheory.Intervals;
 using MusicTheory.RomanNumerals;
+using MusicTheory.Modes;
 
 public class Circle
 {
@@ -48,17 +49,17 @@ public class Circle
 
 public interface IRoman<T> where T : Circle
 {
-    public int CurrentScaleDegree { get; set; }
+    public MusicTheory.ScaleDegrees.ScaleDegree CurrentScaleDegree { get; set; }
     public Scale Scale { get; set; }
     public ModeDegree Mode { get; set; }
     public RomanNumeral RomanNumeral { get; }
-    public void ScrollRoman(int delta);
+    public MusicTheory.ScaleDegrees.ScaleDegree ScrollRoman(int delta);
 }
 
 public interface IKey<T> where T : Circle
 {
     public Key CurrentKey { get; set; }
-    public void ScrollKey(Interval delta);
+    public Key ScrollKey(Interval delta);
 }
 
 

@@ -1,7 +1,9 @@
 using UnityEngine;
 using MusicTheory;
 using MusicTheory.Scales;
+using MusicTheory.ScaleDegrees;
 using MusicTheory.Keys;
+using MusicTheory.Modes;
 
 public class TriadCalculator
 {
@@ -11,11 +13,12 @@ public class TriadCalculator
         ThrPos = thrPos;
         FthPos = fthPos;
 
-        _ = Root;
-        _ = Third;
-        _ = Fifth;
+        _ = RootCard;
+        _ = ThirdCard;
+        _ = FifthCard;
 
         ScaleCard = new(new Vector2(-Cam.UIOrthoX + 2.15f, -0.5f));
+        ChordCard = new(RootPos + (Vector2.down * 2));
 
         CircleOfFifths = new ChromaticKeyCircle("Key Circle Of Fifths",
             2,
@@ -24,12 +27,21 @@ public class TriadCalculator
             ChromaticKeyCircle.CircleType.Fifths);
 
         RomanCircle = new RomanCircle("Roman Diatonic Circle of Steps",
-            1.25f,
+            1.65f,
             new Vector2(-Cam.UIOrthoX + 2.15f, -Cam.UIOrthoY + 1.35f),
             new Major(),
             ModeDegree.Prime,
-            0,
+            Scale.ScaleDegrees[0],
             RomanCircle.CircleType.Seconds);
+
+        DiatonicKeyCircle = new DiatonicKeyCircle(
+            "Nominal Circle of Steps",
+             1.25f,
+             new Vector2(-Cam.UIOrthoX + 6.45f, -Cam.UIOrthoY + 1.35f),
+             CurrentKey,
+             Scale,
+             CurrentScaleDegree,
+             DiatonicKeyCircle.CircleType.Seconds);
 
         this.SetChordTones();
     }
@@ -38,6 +50,9 @@ public class TriadCalculator
     {
         ScaleCard.SelfDestruct();
         Parent.SelfDestruct();
+        CircleOfFifths.SelfDestruct();
+        RomanCircle.SelfDestruct();
+        DiatonicKeyCircle.SelfDestruct();
     }
 
     Vector2 RootPos; Vector2 ThrPos; Vector2 FthPos;
@@ -66,17 +81,67 @@ public class TriadCalculator
         }
     }
 
+    private Key _currentKey = new C();
+    public Key CurrentKey
+    {
+        get => _currentKey;
+        set
+        {
+            _currentKey = value;
+            CircleOfFifths.CurrentKey = value;
+            Root = Scale.Root(CurrentScaleDegree, value);
+        }
+    }
+
+    private ScaleDegree _curentScaleDegree = new _1();
+    public ScaleDegree CurrentScaleDegree
+    {
+        get => _curentScaleDegree;
+        set
+        {
+            _curentScaleDegree = value;
+            Root = Scale.Root(value, CurrentKey);
+            RomanCircle.CurrentScaleDegree = value;
+            DiatonicKeyCircle.CurrentScaleDegree = value;
+        }
+    }
+
+    private Key _root = new C();
+    public Key Root
+    {
+        get => _root;
+        set
+        {
+            _root = value;
+            ChordCard.CurrentRoot = value;
+        }
+    }
+
+    public void ScrollRoman(int delta)
+    {
+        CurrentScaleDegree = RomanCircle.ScrollRoman(delta);
+        DiatonicKeyCircle.ScrollKey(new MusicTheory.Intervals.P1());
+        Root = Scale.Root(CurrentScaleDegree, CurrentKey);
+    }
+
+    public void ScrollKey(MusicTheory.Intervals.Interval delta)
+    {
+        CurrentKey = CircleOfFifths.ScrollKey(delta);
+    }
+
     public ChromaticKeyCircle CircleOfFifths;
     public RomanCircle RomanCircle;
+    public DiatonicKeyCircle DiatonicKeyCircle;
 
     private Card _parent;
     public Card Parent => _parent ??= new Card(nameof(TriadCalculator), null);
 
     public ScaleCard ScaleCard;
+    public ChordCard ChordCard;
 
-    private Card _root;
-    public Card Root => _root ??= Parent.CreateChild(nameof(Root), Parent.Canvas.transform, Parent.Canvas)
-            .SetTextString(nameof(Root))
+    private Card _rootCard;
+    public Card RootCard => _rootCard ??= Parent.CreateChild(nameof(RootCard), Parent.Canvas.transform, Parent.Canvas)
+            .SetTextString("Root")
             .SetTMPPosition(RootPos)
             .SetTextAlignment(TMPro.TextAlignmentOptions.Center)
             .AutoSizeTextContainer(true)
@@ -84,9 +149,9 @@ public class TriadCalculator
             .AutoSizeFont(true)
             .AllowWordWrap(false);
 
-    private Card _third;
-    public Card Third => _third ??= Parent.CreateChild(nameof(Third), Parent.Canvas.transform, Parent.Canvas)
-            .SetTextString(nameof(Third))
+    private Card _thirdCard;
+    public Card ThirdCard => _thirdCard ??= Parent.CreateChild(nameof(ThirdCard), Parent.Canvas.transform, Parent.Canvas)
+            .SetTextString("Third")
             .SetTMPPosition(ThrPos)
             .SetTextAlignment(TMPro.TextAlignmentOptions.Center)
             .AutoSizeTextContainer(true)
@@ -94,9 +159,9 @@ public class TriadCalculator
             .AutoSizeFont(true)
             .AllowWordWrap(false);
 
-    private Card _fifth;
-    public Card Fifth => _fifth ??= Parent.CreateChild(nameof(Fifth), Parent.Canvas.transform, Parent.Canvas)
-            .SetTextString(nameof(Fifth))
+    private Card _fifthCard;
+    public Card FifthCard => _fifthCard ??= Parent.CreateChild(nameof(FifthCard), Parent.Canvas.transform, Parent.Canvas)
+            .SetTextString("Fifth")
             .SetTMPPosition(FthPos)
             .SetTextAlignment(TMPro.TextAlignmentOptions.Center)
             .AutoSizeTextContainer(true)

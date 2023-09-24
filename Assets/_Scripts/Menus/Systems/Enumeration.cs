@@ -38,11 +38,11 @@ public abstract class Enumeration
     /// <summary>
     /// Matches Id only.
     /// </summary>
-    public static bool operator ==(Enumeration a, Enumeration b) => a.Id == b.Id;
+    public static bool operator ==(Enumeration a, Enumeration b) => a.Id == b.Id && a.Name == b.Name;
     /// <summary>
     /// Matches Id only.
     /// </summary>
-    public static bool operator !=(Enumeration a, Enumeration b) => a.Id != b.Id;
+    public static bool operator !=(Enumeration a, Enumeration b) => a.Id != b.Id || a.Name != b.Name;
 
     /// <summary>
     /// Matches Id only.
@@ -97,6 +97,15 @@ public abstract class Enumeration
     {
         foreach (var e in ListAll<T>()) if (e.Name == s) return e;
         throw new ArgumentOutOfRangeException(s);
+    }
+
+    /// <summary>
+    /// Return a new instance of the enum matched by Id.
+    /// </summary>
+    public static T FindMatch<T>(int i, string s) where T : Enumeration, new()
+    {
+        foreach (var e in ListAll<T>()) if (e.Id == i && e.Name == s) return e;
+        throw new ArgumentOutOfRangeException(i.ToString());
     }
 
     /// <summary>

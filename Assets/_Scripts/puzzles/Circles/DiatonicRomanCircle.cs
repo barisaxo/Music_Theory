@@ -2,17 +2,19 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using MusicTheory.Scales;
+using MusicTheory.ScaleDegrees;
 using MusicTheory.RomanNumerals;
+using MusicTheory.Modes;
 
 namespace MusicTheory
 {
     public class RomanCircle : Circle, IRoman<RomanCircle>
     {
-        public RomanCircle(string name, float radius, Vector2 pos, Scale scale, ModeDegree mode, int roman, CircleType type) : base(name, radius, pos)
+        public RomanCircle(string name, float radius, Vector2 pos, Scale scale, ModeDegree mode, ScaleDegree scaleDegree, CircleType type) : base(name, radius, pos)
         {
             Scale = scale;
             Mode = mode;
-            CurrentScaleDegree = roman;
+            CurrentScaleDegree = scaleDegree;
             Type = type;
             PointNames = GetPointNames();
             this.DrawCircle();
@@ -21,8 +23,8 @@ namespace MusicTheory
         public CircleType Type;
         public Scale Scale { get; set; }
         public ModeDegree Mode { get; set; }
-        public int CurrentScaleDegree { get; set; }
-        public RomanNumeral RomanNumeral { get => Scale.ScaleDegrees[CurrentScaleDegree].ToRoman(); }
+        public ScaleDegree CurrentScaleDegree { get; set; }
+        public RomanNumeral RomanNumeral { get => CurrentScaleDegree.ToRoman(); }
 
         public enum CircleType { Seconds, Thirds, Fifths, }
 
@@ -32,15 +34,26 @@ namespace MusicTheory
 
             for (int i = 0; i < temp.Length; i++)
             {
-                temp[i] = Scale.ScaleDegrees[i].ToRoman().Name;
+                Triads.Triad triad = Scale.ScaleDegrees[i].GetTriadQuality(
+                    Scale.ScaleDegrees[(i + 2) % Scale.ScaleDegrees.Length],
+                    Scale.ScaleDegrees[(i + 4) % Scale.ScaleDegrees.Length]);
+
+                temp[i] = Scale.ScaleDegrees[i].ToRoman().Name + triad.Name;
             }
 
             return temp;
         }
 
-        public void ScrollRoman(int delta)
+        public ScaleDegree ScrollRoman(int delta)
         {
-            CurrentScaleDegree = (CurrentScaleDegree + delta) % Scale.ScaleDegrees.Length;
+            this.RotateCounterClockwise();
+
+            int x = 0;
+
+            for (int i = 0; i < Scale.ScaleDegrees.Length; i++)
+                if (CurrentScaleDegree.Equals(Scale.ScaleDegrees[i])) { x = i; break; }
+
+            return CurrentScaleDegree = Scale.ScaleDegrees[(x + delta) % Scale.ScaleDegrees.Length];
         }
     }
 

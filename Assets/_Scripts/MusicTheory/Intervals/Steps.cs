@@ -26,7 +26,14 @@ namespace MusicTheory.Steps
         public static readonly StepEnum Whole = new(2, nameof(Whole));
         public static readonly StepEnum Augmented = new(3, nameof(Augmented));
 
-        public static implicit operator Step(StepEnum e) => new(e);
+        public static implicit operator Step(StepEnum e) => e switch
+        {
+            _ when e == Half => new Half(),
+            _ when e == Whole => new Whole(),
+            _ when e == Augmented => new Augmented(),
+            _ => throw new System.ArgumentOutOfRangeException()
+        };
+
         public static explicit operator StepEnum(int i) => FindId<StepEnum>(i);
     }
 
