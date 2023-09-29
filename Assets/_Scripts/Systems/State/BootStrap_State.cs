@@ -20,7 +20,6 @@ public class BootStrap_State : State
 
     protected override void EngageState()
     {
-        //SetStateDirectly(new IntroMenuState());
         SetStateDirectly(new TheoryPuzzleState());
         //SetStateDirectly(new MusicTheoryTest_State());
     }

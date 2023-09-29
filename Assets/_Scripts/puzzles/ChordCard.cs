@@ -24,22 +24,11 @@ public class ChordCard
     public Card Card => _card ??= new Card(nameof(ChordCard), Parent.transform)
             .SetTextString("<size=60%><font-weight=\"100\">" + nameof(Triad) + ": " + "</font-weight><size=100%>" + "Major")
             .SetTextAlignment(TMPro.TextAlignmentOptions.Center)
+            .SetTextColor(new Color(1f, 1f, .6f))
             .AutoSizeTextContainer(true)
             .SetFontScale(.65f, .65f)
             .AutoSizeFont(true)
             .AllowWordWrap(false);
-
-
-    //private Mode _mode = new Mode(new Major(), ModeDegreeEnum.Prime, nameof(Mode));
-    //public Mode Mode
-    //{
-    //    get => _mode;
-    //    set
-    //    {
-    //        _mode = value;
-    //        Card.SetTextString(nameof(ScaleCard) + ": " + Scale.Name + _mode.Name);
-    //    }
-    //}
 
     private Key _currentRoot = new C();
     public Key CurrentRoot

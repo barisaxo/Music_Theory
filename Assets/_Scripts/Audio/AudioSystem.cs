@@ -21,7 +21,7 @@ namespace Audio
         public bool Running;
         protected double NextEventTime { get; set; }
 
-        private void Destruct()
+        public void SelfDestruct()
         {
             _audioSources = null;
             AudioClipSettings = null;
@@ -38,8 +38,8 @@ namespace Audio
         {
             get
             {
-                if (_parent != null) _parent.SetActive(true);
-                return _parent != null ? _parent : _parent = new GameObject(_name);
+                if (_parent) _parent.SetActive(true);
+                return !_parent ? _parent = new GameObject(_name) : _parent;
             }
         }
 
@@ -166,7 +166,7 @@ namespace Audio
                 CurrentVolumeLevel = 0;
                 foreach (var a in AudioSources) a.Stop();
                 Running = false;
-                Destruct();
+                SelfDestruct();
             }
         }
 

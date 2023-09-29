@@ -3,7 +3,6 @@ using MusicTheory.ScaleDegrees.DegreeEnum;
 
 namespace MusicTheory.ScaleDegrees
 {
-
     public class ScaleDegree
     {
         public ScaleDegree(ScaleDegreeEnum degree) { Enum = degree; }

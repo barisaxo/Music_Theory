@@ -47,18 +47,3 @@
 
     }
 }
-
-//public interface INominal
-//{
-//    public string Name { get; }
-//}
-
-//public interface ICardinal
-//{
-//    public int Id { get; }
-//}
-
-//public interface IOrdinal
-//{
-//    public int Id { get; }
-//}

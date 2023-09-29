@@ -20,9 +20,9 @@ namespace MusicTheory.Keys
         public static bool operator !=(Key a, KeyEnum b) => a.Enum != b;
         public override bool Equals(object obj) => obj is Key e && e.Enum == Enum;
         public override int GetHashCode() => HashCode.Combine(Enum);
-        public static implicit operator KeyEnum(Key key) => key.Enum;
-        public static explicit operator int(Key key) => key.Enum.Id;
-        public static explicit operator Key(int i) => Enumeration.FindId<KeyEnum>(i);
+        //public static implicit operator KeyEnum(Key key) => key.Enum;
+        //public static explicit operator int(Key key) => key.Enum.Id;
+        //public static explicit operator Key(int i) => Enumeration.FindId<KeyEnum>(i);
         //public static explicit operator Key(ScaleDegree s) => (Key)(int)s;
         public override string ToString() => Name;
     }
@@ -111,29 +111,13 @@ namespace MusicTheory.Keys
 
         public static KeyEnum Find((Letter letter, Accidental accidental) la)
         {
-            //UnityEngine.Debug.Log(la.letter + " " + la.accidental);
-
-            //UnityEngine.Debug.Log(ListAll<KeyEnum>()[0].Name);
-            //UnityEngine.Debug.Log(ListAll<KeyEnum>()[0].Letter.Equals(la.letter));
-            //UnityEngine.Debug.Log(ListAll<KeyEnum>()[0].Accidental == la.accidental);
-
-            //foreach (var e in ListAll<KeyEnum>()) { UnityEngine.Debug.Log(e.Letter + "  " + e.Accidental); }
-
             foreach (var e in ListAll<KeyEnum>())
                 if (e.Letter.Equals(la.letter) && e.Accidental.Equals(la.accidental))
-                {
-                    //UnityEngine.Debug.Log("KeyEnum.Find returned: " + e.Name);
                     return e;
-                }
+
             throw new ArgumentOutOfRangeException(la.ToString());
         }
 
-        //public static explicit operator KeyEnum((Letter letter, Accidental accidental) la) => TryFindByLetterAndDistance(la);
-        //public static KeyEnum TryFindByLetterAndDistance((Letter letter, Accidental accidental) la)
-        //{
-        //    foreach (var e in ListAll<KeyEnum>()) if (e.Letter == la.letter && e.Accidental == la.accidental) return e;
-        //    return KeyEnum.A;
-        //}
     }
 
 }

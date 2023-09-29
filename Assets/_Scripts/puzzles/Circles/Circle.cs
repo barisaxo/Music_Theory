@@ -36,6 +36,7 @@ public class Circle
     private Card _centerCard;
     public Card CenterCard => _centerCard ??= Parent.CreateChild(nameof(CenterCard), Parent.Canvas.transform, Parent.Canvas)
         .SetTextString(PointNames[0])
+        .SetTextColor(new Color(1f, 1f, .6f))
         .SetTMPPosition(Position)
         .SetTextAlignment(TMPro.TextAlignmentOptions.Center)
         .AutoSizeTextContainer(true)
@@ -51,14 +52,14 @@ public interface IRoman<T> where T : Circle
 {
     public MusicTheory.ScaleDegrees.ScaleDegree CurrentScaleDegree { get; set; }
     public Scale Scale { get; set; }
-    public ModeDegree Mode { get; set; }
+    public Mode Mode { get; set; }
     public RomanNumeral RomanNumeral { get; }
     public MusicTheory.ScaleDegrees.ScaleDegree ScrollRoman(int delta);
 }
 
 public interface IKey<T> where T : Circle
 {
-    public Key CurrentKey { get; set; }
+    public Key Key { get; set; }
     public Key ScrollKey(Interval delta);
 }
 

@@ -9,7 +9,6 @@ public class ScaleCard
     public ScaleCard(Vector2 position)
     {
         Card.SetTMPPosition(position);
-        //_ = ClickArea;
     }
 
     public void SelfDestruct()
@@ -30,23 +29,6 @@ public class ScaleCard
         .AutoSizeFont(true)
         .AllowWordWrap(false)
         .TMPClickable();
-
-    //private Card _clickArea;
-    //public Card ClickArea => _clickArea != null ? _clickArea : _clickArea = Card.CreateChild(nameof(ClickArea), Parent.transform, Card.Canvas)
-    //    .SetImageColor(new Color(.62f, .62f, .62f, .2f))
-    //    .ImageClickable();
-
-
-    private Mode _mode = new Mode(new Major(), ModeDegreeEnum.Prime, nameof(Mode));
-    public Mode Mode
-    {
-        get => _mode;
-        set
-        {
-            _mode = value;
-            Card.SetTextString(nameof(ScaleCard) + ": " + Scale.Name + _mode.Name);
-        }
-    }
 
     private Scale _scale = new Major();
     public Scale Scale

@@ -3,6 +3,7 @@ using UnityEngine;
 using MusicTheory.Keys;
 using MusicTheory.Intervals;
 using MusicTheory.ScaleDegrees;
+using MusicTheory.Arithmetic;
 
 public class MusicTheoryTest_State : State
 {
@@ -14,8 +15,9 @@ public class MusicTheoryTest_State : State
 
     protected override void EngageState()
     {
+        //_ = new MusicTheory.Scales.Major();
         //TestAllIntervals();
-        TestScaleDegreeToInterval();
+        //TestScaleDegreeToInterval();
     }
 
     private void TestScaleDegreeToInterval()
@@ -51,4 +53,5 @@ public class MusicTheoryTest_State : State
             }
         }
     }
+
 }

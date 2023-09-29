@@ -10,7 +10,7 @@ sealed class ScreenFader
 
     public void SelfDestruct()
     {
-        UnityEngine.Object.DestroyImmediate(Parent.gameObject);
+        Object.DestroyImmediate(Parent.gameObject);
     }
 
     private Transform _parent;

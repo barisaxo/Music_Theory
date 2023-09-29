@@ -25,7 +25,7 @@ namespace Dialog
         public Dialogue Dialogue;
 
         private GameObject _parent;
-        public GameObject Parent => _parent != null ? _parent : _parent = new GameObject(nameof(Dialog));
+        public GameObject Parent => !_parent ? _parent = new GameObject(nameof(Dialog)) : _parent;
 
         private Card _textBackground;
         private Card TextBackground => _textBackground ??= new Card(nameof(TextBackground), Parent.transform)

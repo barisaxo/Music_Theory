@@ -1,18 +1,26 @@
-//using MusicTheory.Intervals;
 
-namespace MusicTheory.ScaleDegrees
+
+namespace MusicTheory.Arithmetic
 {
     public static class ScaleDegreeSystems
     {
-        public static Intervals.Interval AsInterval(this ScaleDegree scaleDegree) =>
+        public static Intervals.Interval AsInterval(this ScaleDegrees.ScaleDegree scaleDegree) =>
             Intervals.IntervalEnum.Find(
                 ((Intervals.QualityEnum)scaleDegree.Enum.Quality,
                 (Intervals.QuantityEnum)scaleDegree.Enum.Degree)
                 );
 
+        public static Intervals.Interval AsInterval(this Steps.Step step) =>
+         step switch
+         {
+             Steps.Half => new Intervals.mi2(),
+             Steps.Whole => new Intervals.M2(),
+             Steps.Augmented => new Intervals.A2(),
 
+             _ => throw new System.ArgumentOutOfRangeException()
+         };
 
-        public static Intervals.Quantity GetQuantity(this ScaleDegree left, ScaleDegree right)
+        public static Intervals.Quantity GetQuantity(this ScaleDegrees.ScaleDegree left, ScaleDegrees.ScaleDegree right)
         {
             return ((right.Enum.Degree.Id + 7 - left.Enum.Degree.Id) % 7) switch
             {
@@ -27,42 +35,90 @@ namespace MusicTheory.ScaleDegrees
             };
         }
 
-        public static Intervals.Interval GetInterval(this ScaleDegree left, ScaleDegree right)
+        public static Intervals.Quantity GetQuantity(this Keys.Key left, Keys.Key right)
         {
+            //UnityEngine.Debug.Log(left.Name + " " + right.Name);
+            return ((right.Enum.Letter.Id + 7 - left.Enum.Letter.Id) % 7) switch
+            {
+                0 => Intervals.QuantityEnum.Unison,
+                1 => Intervals.QuantityEnum.Second,
+                2 => Intervals.QuantityEnum.Third,
+                3 => Intervals.QuantityEnum.Fourth,
+                4 => Intervals.QuantityEnum.Fifth,
+                5 => Intervals.QuantityEnum.Sixth,
+                6 => Intervals.QuantityEnum.Seventh,
+                _ => throw new System.ArgumentOutOfRangeException()
+            };
+        }
+
+        public static Intervals.Interval GetInterval(this ScaleDegrees.ScaleDegree left, ScaleDegrees.ScaleDegree right)
+        {
+            Intervals.Interval newInterval = new Intervals.P1();
             Intervals.Quantity quantity = left.GetQuantity(right);
             int id = (right.Id + 12 - left.Id) % 12;
-            UnityEngine.Debug.Log(left.Id + " - " + right.Id + " = " + id + " : " + quantity.Name);
-
-            if ((quantity is Intervals.Third || quantity is Intervals.Unison) && id == 2) quantity = new Intervals.Second();
 
             foreach (var interval in Enumeration.ListAll<Intervals.IntervalEnum>())
             {
-                if (interval.Id.Equals(id) && interval.Quantity.Equals(quantity)) return interval;
+                if (interval.Id.Equals(id) &&
+                    System.MathF.Abs(interval.Quantity.Id - quantity.Id) <
+                    System.MathF.Abs(newInterval.Quantity.Id - quantity.Id))
+                    newInterval = interval;
             }
-            throw new System.ArgumentOutOfRangeException(left.Name + ", " + right.Name);
+
+            return newInterval;
         }
 
-        public static RomanNumerals.RomanNumeral ToRoman(this ScaleDegree scaleDegree) =>
+        public static RomanNumerals.RomanNumeral ToRoman(this ScaleDegrees.ScaleDegree scaleDegree) =>
             scaleDegree switch
             {
-                _1 => new RomanNumerals.I(),
-                _2 => new RomanNumerals.II(),
-                _3 => new RomanNumerals.III(),
-                P4 => new RomanNumerals.IV(),
-                P5 => new RomanNumerals.V(),
-                _6 => new RomanNumerals.VI(),
-                _7 => new RomanNumerals.VII(),
-                b2 => new RomanNumerals.bII(),
-                b3 => new RomanNumerals.bIII(),
-                b4 => new RomanNumerals.III(),
-                b5 => new RomanNumerals.bV(),
-                b6 => new RomanNumerals.bVI(),
-                d7 => new RomanNumerals.dVII(),
-                b7 => new RomanNumerals.bVII(),
-                s2 => new RomanNumerals.sII(),
-                s4 => new RomanNumerals.sIV(),
-                s5 => new RomanNumerals.sV(),
+                ScaleDegrees._1 => new RomanNumerals.I(),
+                ScaleDegrees._2 => new RomanNumerals.II(),
+                ScaleDegrees._3 => new RomanNumerals.III(),
+                ScaleDegrees.P4 => new RomanNumerals.IV(),
+                ScaleDegrees.P5 => new RomanNumerals.V(),
+                ScaleDegrees._6 => new RomanNumerals.VI(),
+                ScaleDegrees._7 => new RomanNumerals.VII(),
+                ScaleDegrees.b2 => new RomanNumerals.bII(),
+                ScaleDegrees.b3 => new RomanNumerals.bIII(),
+                ScaleDegrees.b4 => new RomanNumerals.III(),
+                ScaleDegrees.b5 => new RomanNumerals.bV(),
+                ScaleDegrees.b6 => new RomanNumerals.bVI(),
+                ScaleDegrees.d7 => new RomanNumerals.dVII(),
+                ScaleDegrees.b7 => new RomanNumerals.bVII(),
+                ScaleDegrees.s2 => new RomanNumerals.sII(),
+                ScaleDegrees.s4 => new RomanNumerals.sIV(),
+                ScaleDegrees.s5 => new RomanNumerals.sV(),
                 _ => throw new System.ArgumentOutOfRangeException(scaleDegree.Name)
             };
+
+        public static Triads.Triad GetTriadQuality(this ScaleDegrees.ScaleDegree root, ScaleDegrees.ScaleDegree third, ScaleDegrees.ScaleDegree fifth)
+        {
+            return (root.GetInterval(third), root.GetInterval(fifth)) switch
+            {
+                (Intervals.M3, Intervals.P5) => new Triads.Major(),
+                (Intervals.mi3, Intervals.P5) => new Triads.Minor(),
+
+                (Intervals.M3, Intervals.A5) => new Triads.Augmented(),
+                (Intervals.M3, Intervals.mi6) => new Triads.Augmented(),
+                (Intervals.d4, Intervals.mi6) => new Triads.Augmented(),
+                (Intervals.d4, Intervals.A5) => new Triads.Augmented(),
+
+                (Intervals.mi3, Intervals.d5) => new Triads.Diminished(),
+                (Intervals.mi3, Intervals.A4) => new Triads.Diminished(),
+                (Intervals.A2, Intervals.d5) => new Triads.Diminished(),
+                (Intervals.A2, Intervals.A4) => new Triads.Diminished(),
+
+                (Intervals.M2, Intervals.M3) => new Triads.Secundal(),
+                (Intervals.M2, Intervals.d4) => new Triads.Secundal(),
+
+                (Intervals.M3, Intervals.M6) => new Triads.Quartal(),
+                (Intervals.P4, Intervals.mi7) => new Triads.Quartal(),
+                (Intervals.P4, Intervals.M6) => new Triads.Quartal(),
+                (Intervals.mi3, Intervals.P4) => new Triads.Quartal(),
+                (Intervals.M2, Intervals.P4) => new Triads.Quartal(),
+                _ => throw new System.ArgumentOutOfRangeException(root.Name + ", " + root.GetInterval(third) + ", " + third.Name + ", " + root.GetInterval(fifth) + ", " + fifth.Name)
+            };
+        }
+
     }
 }

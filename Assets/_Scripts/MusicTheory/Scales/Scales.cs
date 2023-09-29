@@ -87,7 +87,7 @@ namespace MusicTheory.Scales
     {
         public Diminished6th() : base(
            @enum: ScaleEnum.Diminished6th,
-           modes: new Mode[] { new Modes.Diminished6th(), new Diminished6thII() },
+           modes: new Mode[] { new Modes.Diminished6thI(), new Diminished6thII() },
            steps: new Step[] { new Whole(), new Whole(), new Half(), new Whole(), new Half(), new Half(), new Whole(), new Half() },
            degrees: new ScaleDegree[] { new _1(), new _2(), new _3(), new P4(), new P5(), new b6(), new _6(), new _7(), })
         { }
@@ -103,9 +103,9 @@ namespace MusicTheory.Scales
         { }
     }
 
-    public class PentaTonic : Scale
+    public class Pentatonic : Scale
     {
-        public PentaTonic() : base(
+        public Pentatonic() : base(
             @enum: ScaleEnum.PentaTonic,
             modes: new Mode[] { new PentatonicMajor(), new PentatonicII(), new PentatonicIII(), new PentatonicIV(), new PentatonicMinor() },
             steps: new Step[] { new Whole(), new Whole(), new Augmented(), new Whole(), new Augmented() },
@@ -139,7 +139,7 @@ namespace MusicTheory.Scales
             _ when s == WholeTone => new WholeTone(),
             _ when s == Diminished6th => new Diminished6th(),
             _ when s == Chromatic => new Chromatic(),
-            _ when s == PentaTonic => new PentaTonic(),
+            _ when s == PentaTonic => new Pentatonic(),
             _ => throw new ArgumentOutOfRangeException()
         };
     }

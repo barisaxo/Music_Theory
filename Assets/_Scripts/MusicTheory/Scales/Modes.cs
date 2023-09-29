@@ -6,51 +6,51 @@ namespace MusicTheory.Modes
 
     public class Mode
     {
-        public Mode(Scale parentScale, ModeDegreeEnum mode, string name) { ParentScale = parentScale; Enum = mode; Name = name; }//: base(parentScale.Enum, mode, parentScale.ShiftSteps(mode), parentScale.ScaleDegrees) { Name = name; }
+        public Mode(ScaleEnum parentScale, ModeDegreeEnum mode, string name) { ParentScale = parentScale; Enum = mode; Name = name; }//: base(parentScale.Enum, mode, parentScale.ShiftSteps(mode), parentScale.ScaleDegrees) { Name = name; }
         public readonly string Name;
-        public readonly Scale ParentScale;
+        public readonly ScaleEnum ParentScale;
         public readonly ModeDegreeEnum Enum;
     }
 
-    public class Ionian : Mode { public Ionian() : base(new Major(), ModeDegreeEnum.Prime, nameof(Ionian)) { } }
-    public class Dorian : Mode { public Dorian() : base(new Major(), ModeDegreeEnum.Second, nameof(Dorian)) { } }
-    public class Phrygian : Mode { public Phrygian() : base(new Major(), ModeDegreeEnum.Third, nameof(Phrygian)) { } }
-    public class Lydian : Mode { public Lydian() : base(new Major(), ModeDegreeEnum.Fourth, nameof(Lydian)) { } }
-    public class MixoLydian : Mode { public MixoLydian() : base(new Major(), ModeDegreeEnum.Fifth, nameof(MixoLydian)) { } }
-    public class Aeolian : Mode { public Aeolian() : base(new Major(), ModeDegreeEnum.Sixth, nameof(Aeolian)) { } }
-    public class Locrian : Mode { public Locrian() : base(new Major(), ModeDegreeEnum.Seventh, nameof(Locrian)) { } }
+    public class Ionian : Mode { public Ionian() : base(ScaleEnum.Major, ModeDegreeEnum.Prime, nameof(Ionian)) { } }
+    public class Dorian : Mode { public Dorian() : base(ScaleEnum.Major, ModeDegreeEnum.Second, nameof(Dorian)) { } }
+    public class Phrygian : Mode { public Phrygian() : base(ScaleEnum.Major, ModeDegreeEnum.Third, nameof(Phrygian)) { } }
+    public class Lydian : Mode { public Lydian() : base(ScaleEnum.Major, ModeDegreeEnum.Fourth, nameof(Lydian)) { } }
+    public class MixoLydian : Mode { public MixoLydian() : base(ScaleEnum.Major, ModeDegreeEnum.Fifth, nameof(MixoLydian)) { } }
+    public class Aeolian : Mode { public Aeolian() : base(ScaleEnum.Major, ModeDegreeEnum.Sixth, nameof(Aeolian)) { } }
+    public class Locrian : Mode { public Locrian() : base(ScaleEnum.Major, ModeDegreeEnum.Seventh, nameof(Locrian)) { } }
 
-    public class HarmonicI : Mode { public HarmonicI() : base(new HarmonicMinor(), ModeDegreeEnum.Prime, nameof(HarmonicMinor)) { } }
-    public class HarmonicII : Mode { public HarmonicII() : base(new HarmonicMinor(), ModeDegreeEnum.Second, nameof(HarmonicMinor)) { } }
-    public class HarmonicIII : Mode { public HarmonicIII() : base(new HarmonicMinor(), ModeDegreeEnum.Third, nameof(HarmonicMinor)) { } }
-    public class HarmonicIV : Mode { public HarmonicIV() : base(new HarmonicMinor(), ModeDegreeEnum.Fourth, nameof(HarmonicMinor)) { } }
-    public class HarmonicV : Mode { public HarmonicV() : base(new HarmonicMinor(), ModeDegreeEnum.Fifth, nameof(HarmonicMinor)) { } }
-    public class HarmonicVI : Mode { public HarmonicVI() : base(new HarmonicMinor(), ModeDegreeEnum.Sixth, nameof(HarmonicMinor)) { } }
-    public class HarmonicVII : Mode { public HarmonicVII() : base(new HarmonicMinor(), ModeDegreeEnum.Seventh, nameof(HarmonicMinor)) { } }
+    public class HarmonicI : Mode { public HarmonicI() : base(ScaleEnum.HarmonicMinor, ModeDegreeEnum.Prime, nameof(HarmonicI)) { } }
+    public class HarmonicII : Mode { public HarmonicII() : base(ScaleEnum.HarmonicMinor, ModeDegreeEnum.Second, nameof(HarmonicII)) { } }
+    public class HarmonicIII : Mode { public HarmonicIII() : base(ScaleEnum.HarmonicMinor, ModeDegreeEnum.Third, nameof(HarmonicIII)) { } }
+    public class HarmonicIV : Mode { public HarmonicIV() : base(ScaleEnum.HarmonicMinor, ModeDegreeEnum.Fourth, nameof(HarmonicIV)) { } }
+    public class HarmonicV : Mode { public HarmonicV() : base(ScaleEnum.HarmonicMinor, ModeDegreeEnum.Fifth, nameof(HarmonicV)) { } }
+    public class HarmonicVI : Mode { public HarmonicVI() : base(ScaleEnum.HarmonicMinor, ModeDegreeEnum.Sixth, nameof(HarmonicVI)) { } }
+    public class HarmonicVII : Mode { public HarmonicVII() : base(ScaleEnum.HarmonicMinor, ModeDegreeEnum.Seventh, nameof(HarmonicVII)) { } }
 
-    public class JazzI : Mode { public JazzI() : base(new JazzMinor(), ModeDegreeEnum.Prime, nameof(JazzMinor)) { } }
-    public class JazzII : Mode { public JazzII() : base(new JazzMinor(), ModeDegreeEnum.Second, nameof(JazzMinor)) { } }
-    public class JazzIII : Mode { public JazzIII() : base(new JazzMinor(), ModeDegreeEnum.Third, nameof(JazzMinor)) { } }
-    public class JazzIV : Mode { public JazzIV() : base(new JazzMinor(), ModeDegreeEnum.Fourth, nameof(JazzMinor)) { } }
-    public class JazzV : Mode { public JazzV() : base(new JazzMinor(), ModeDegreeEnum.Fifth, nameof(JazzMinor)) { } }
-    public class JazzVI : Mode { public JazzVI() : base(new JazzMinor(), ModeDegreeEnum.Sixth, nameof(JazzMinor)) { } }
-    public class JazzVII : Mode { public JazzVII() : base(new JazzMinor(), ModeDegreeEnum.Seventh, nameof(JazzMinor)) { } }
+    public class JazzI : Mode { public JazzI() : base(ScaleEnum.JazzMinor, ModeDegreeEnum.Prime, nameof(JazzI)) { } }
+    public class JazzII : Mode { public JazzII() : base(ScaleEnum.JazzMinor, ModeDegreeEnum.Second, nameof(JazzII)) { } }
+    public class JazzIII : Mode { public JazzIII() : base(ScaleEnum.JazzMinor, ModeDegreeEnum.Third, nameof(JazzIII)) { } }
+    public class JazzIV : Mode { public JazzIV() : base(ScaleEnum.JazzMinor, ModeDegreeEnum.Fourth, nameof(JazzIV)) { } }
+    public class JazzV : Mode { public JazzV() : base(ScaleEnum.JazzMinor, ModeDegreeEnum.Fifth, nameof(JazzV)) { } }
+    public class JazzVI : Mode { public JazzVI() : base(ScaleEnum.JazzMinor, ModeDegreeEnum.Sixth, nameof(JazzVI)) { } }
+    public class JazzVII : Mode { public JazzVII() : base(ScaleEnum.JazzMinor, ModeDegreeEnum.Seventh, nameof(JazzVII)) { } }
 
-    public class Diminished : Mode { public Diminished() : base(new Scales.Diminished(), ModeDegreeEnum.Prime, nameof(Diminished)) { } }
-    public class Octatonic : Mode { public Octatonic() : base(new Scales.Diminished(), ModeDegreeEnum.Second, nameof(Octatonic)) { } }
+    public class Diminished : Mode { public Diminished() : base(ScaleEnum.Diminished, ModeDegreeEnum.Prime, nameof(Diminished)) { } }
+    public class Octatonic : Mode { public Octatonic() : base(ScaleEnum.Diminished, ModeDegreeEnum.Second, nameof(Octatonic)) { } }
 
-    public class PentatonicMajor : Mode { public PentatonicMajor() : base(new Scales.PentaTonic(), ModeDegreeEnum.Prime, nameof(PentatonicMajor)) { } }
-    public class PentatonicII : Mode { public PentatonicII() : base(new Scales.PentaTonic(), ModeDegreeEnum.Seventh, nameof(PentatonicII)) { } }
-    public class PentatonicIII : Mode { public PentatonicIII() : base(new Scales.PentaTonic(), ModeDegreeEnum.Third, nameof(PentatonicIII)) { } }
-    public class PentatonicIV : Mode { public PentatonicIV() : base(new Scales.PentaTonic(), ModeDegreeEnum.Fourth, nameof(PentatonicIV)) { } }
-    public class PentatonicMinor : Mode { public PentatonicMinor() : base(new Scales.PentaTonic(), ModeDegreeEnum.Fifth, nameof(PentatonicMinor)) { } }
+    public class PentatonicMajor : Mode { public PentatonicMajor() : base(ScaleEnum.PentaTonic, ModeDegreeEnum.Prime, nameof(PentatonicMajor)) { } }
+    public class PentatonicII : Mode { public PentatonicII() : base(ScaleEnum.PentaTonic, ModeDegreeEnum.Seventh, nameof(PentatonicII)) { } }
+    public class PentatonicIII : Mode { public PentatonicIII() : base(ScaleEnum.PentaTonic, ModeDegreeEnum.Third, nameof(PentatonicIII)) { } }
+    public class PentatonicIV : Mode { public PentatonicIV() : base(ScaleEnum.PentaTonic, ModeDegreeEnum.Fourth, nameof(PentatonicIV)) { } }
+    public class PentatonicMinor : Mode { public PentatonicMinor() : base(ScaleEnum.PentaTonic, ModeDegreeEnum.Fifth, nameof(PentatonicMinor)) { } }
 
-    public class Diminished6th : Mode { public Diminished6th() : base(new Scales.Diminished6th(), ModeDegreeEnum.Prime, nameof(Diminished6th)) { } }
-    public class Diminished6thII : Mode { public Diminished6thII() : base(new Scales.Diminished6th(), ModeDegreeEnum.Second, nameof(Diminished6th)) { } }
+    public class Diminished6thI : Mode { public Diminished6thI() : base(ScaleEnum.Diminished6th, ModeDegreeEnum.Prime, nameof(Diminished6thI)) { } }
+    public class Diminished6thII : Mode { public Diminished6thII() : base(ScaleEnum.Diminished6th, ModeDegreeEnum.Second, nameof(Diminished6thII)) { } }
 
-    public class WholeTone : Mode { public WholeTone() : base(new Scales.WholeTone(), ModeDegreeEnum.Prime, nameof(WholeTone)) { } }
+    public class WholeTone : Mode { public WholeTone() : base(ScaleEnum.WholeTone, ModeDegreeEnum.Prime, nameof(WholeTone)) { } }
 
-    public class Chromatic : Mode { public Chromatic() : base(new Scales.Chromatic(), ModeDegreeEnum.Prime, nameof(Chromatic)) { } }
+    public class Chromatic : Mode { public Chromatic() : base(ScaleEnum.Chromatic, ModeDegreeEnum.Prime, nameof(Chromatic)) { } }
 
     public class ModeDegreeEnum : Enumeration
     {

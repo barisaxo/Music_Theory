@@ -1,62 +1,61 @@
 using MusicTheory;
-using MusicTheory.ScaleDegrees;
-using MusicTheory.Scales;
 using UnityEngine;
-using MusicTheory.Modes;
+using MusicTheory.Arithmetic;
 
 public static class TriadCalculatorSystems
 {
     public static void SetChordTones(this TriadCalculator t)
     {
-        t.RootCard.SetTextString("<size=60%><font-weight=\"100\">" + "Root:" + "</font-weight><size=100%>" + "   " +
-             t.Scale.Root(t.CurrentScaleDegree, t.CurrentKey));
+        int scaleDegreeIndex = t.Scale.GetIndex(t.ScaleDegree);
 
-        t.ThirdCard.SetTextString("<size=60%><font-weight=\"100\">" + "Third:" + "</font-weight><size=100%>" + "   " +
-            t.Scale.Third(t.CurrentScaleDegree, t.CurrentKey));
+        t.RootCard.SetTextString("<size=60%><font-weight=\"100\">" + "Root:" + "</font-weight><size=100%>" + "   " + t.Keys[scaleDegreeIndex].Name);
 
-        t.FifthCard.SetTextString("<size=60%><font-weight=\"100\">" + "Fifth:" + "</font-weight><size=100%>" + "   " +
-            t.Scale.Fifth(t.CurrentScaleDegree, t.CurrentKey));
+        t.ThirdCard.SetTextString("<size=60%><font-weight=\"100\">" + "Third:" + "</font-weight><size=100%>" + "   " + t.Keys[(scaleDegreeIndex + 2) % t.Keys.Length].Name);
 
-        int x = 0;
+        t.FifthCard.SetTextString("<size=60%><font-weight=\"100\">" + "Fifth:" + "</font-weight><size=100%>" + "   " + t.Keys[(scaleDegreeIndex + 4) % t.Keys.Length].Name);
 
-        for (int i = 0; i < t.Scale.ScaleDegrees.Length; i++)
-            if (t.CurrentScaleDegree.Equals(t.Scale.ScaleDegrees[i])) { x = i; break; }
-
-        t.ChordCard.Triad = t.CurrentScaleDegree.GetTriadQuality(
-                    t.Scale.ScaleDegrees[(x + 2) % t.Scale.ScaleDegrees.Length],
-                    t.Scale.ScaleDegrees[(x + 4) % t.Scale.ScaleDegrees.Length]);
+        t.ChordCard.CurrentRoot = t.Keys[scaleDegreeIndex];
+        t.ChordCard.Triad = t.Keys[scaleDegreeIndex].GetTriadQuality(
+                    t.Keys[(scaleDegreeIndex + 2) % t.Keys.Length],
+                    t.Keys[(scaleDegreeIndex + 4) % t.Keys.Length]);
     }
 
-    public static void SetScale(this TriadCalculator t, Scale scale)
+    public static ChromaticKeyCircle NewChromaticKeyCircleOfFifths(this TriadCalculator t)
     {
-        t.Scale = scale;
-    }
+        t.CircleOfFifths?.SelfDestruct();
 
-    public static RomanCircle NewDiatonicRomanCircle(this TriadCalculator t)
-    {
-        t.RomanCircle?.SelfDestruct();
-        t.CurrentScaleDegree = new _1();
-
-        return new RomanCircle("Roman Circle of Steps",
-             1.65f,
-             new Vector2(-Cam.UIOrthoX + 2.15f, -Cam.UIOrthoY + 1.35f),
-             t.Scale,
-             ModeDegree.Prime,
-             t.CurrentScaleDegree,
-             RomanCircle.CircleType.Seconds);
+        return new ChromaticKeyCircle("Key Circle Of Fifths",
+            2.25f,
+            new Vector2(-Cam.UIOrthoX + 2.15f, 0),
+            t.Key,
+            ChromaticKeyCircle.CircleType.Fifths);
     }
 
     public static DiatonicKeyCircle NewDiatonicKeyCircle(this TriadCalculator t)
     {
         t.DiatonicKeyCircle?.SelfDestruct();
 
-        return new DiatonicKeyCircle(
-            "Nominal Circle of Steps",
-             1.25f,
-             new Vector2(-Cam.UIOrthoX + 6.45f, -Cam.UIOrthoY + 1.35f),
-             t.CurrentKey,
+        return new("Nominal Circle of Steps",
+             2.25f,
+             new Vector2(Cam.UIOrthoX - 2.15f, 1f),
+             t.Keys,
              t.Scale,
-             t.CurrentScaleDegree,
+             t.Mode,
+             t.ScaleDegree,
              DiatonicKeyCircle.CircleType.Seconds);
+    }
+
+    public static void PlayTriad(this TriadCalculator t)
+    {
+        MusicTheory.Keys.Key root = t.Keys[(t.Scale.GetIndex(t.ScaleDegree) + 0) % t.Scale.ScaleDegrees.Length];
+        MusicTheory.Keys.Key third = t.Keys[(t.Scale.GetIndex(t.ScaleDegree) + 2) % t.Scale.ScaleDegrees.Length];
+        MusicTheory.Keys.Key fifth = t.Keys[(t.Scale.GetIndex(t.ScaleDegree) + 4) % t.Scale.ScaleDegrees.Length];
+
+        float rootFreq = root.GetHertz();
+        float thirdFreq = third.Id < root.Id ? third.GetHertz() * 2 : third.GetHertz();
+        float fifthFreq = fifth.Id < third.Id || fifth.Id < root.Id ? fifth.GetHertz() * 2 : fifth.GetHertz();
+
+        AudioClip newAC = Audio.WaveGenerator.CreateTriadSineWave(rootFreq, thirdFreq, fifthFreq);
+        t.TriadAudio.PlayOneShot(newAC);
     }
 }

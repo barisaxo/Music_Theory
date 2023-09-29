@@ -1,79 +1,65 @@
-using System.Collections;
-using System.Collections.Generic;
+
 using UnityEngine;
 using MusicTheory.Keys;
-using MusicTheory.Intervals;
+using MusicTheory.Scales;
 using MusicTheory.ScaleDegrees;
+using MusicTheory.RomanNumerals;
+using MusicTheory.Modes;
+using MusicTheory.Arithmetic;
 
 namespace MusicTheory
 {
-    public class DiatonicKeyCircle : Circle, IKey<DiatonicKeyCircle>
+    public class DiatonicKeyCircle : Circle
     {
-        public DiatonicKeyCircle(string name, float radius, Vector2 pos, Key key, Scales.Scale scale, ScaleDegree degree, CircleType type) : base(name, radius, pos)
+        public DiatonicKeyCircle(string name, float radius, Vector2 pos, Key[] keys,
+            Scale scale, Mode mode, ScaleDegree scaleDegree, CircleType type) : base(name, radius, pos)
         {
             Type = type;
-            CurrentKey = key;
+            Keys = keys;
             Scale = scale;
-            CurrentScaleDegree = degree;
+            Mode = mode;
+            ScaleDegree = scaleDegree;
             PointNames = GetPointNames();
             this.DrawCircle();
         }
 
         public enum CircleType { Seconds, Thirds, Fifths, }
         public readonly CircleType Type;
-
-        private Scales.Scale _scale;
-        public Scales.Scale Scale
-        {
-            get => _scale;
-            set
-            {
-                _scale = value;
-                //todo set texts;
-            }
-        }
-
-        private ScaleDegree _scaleDegree;
-        public ScaleDegree CurrentScaleDegree
-        {
-            get => _scaleDegree;
-            set
-            {
-                _scaleDegree = value;
-                //todo update texts;
-            }
-        }
-
-        private Key _key = new C();
-        public Key CurrentKey
-        {
-            get => _key;
-            set { _key = value; }
-        }
-
+        public readonly Key[] Keys;
+        public Scale Scale { get; set; }
+        public Mode Mode { get; set; }
+        public ScaleDegree ScaleDegree { get; set; }
+        public RomanNumeral RomanNumeral { get => ScaleDegree.ToRoman(); }
 
         private string[] GetPointNames()
         {
-            int x = 0;
-
+            string[] temp = new string[Keys.Length];
+            int modeOffset = Scale.GetIndex(Mode);
+            int scaleDegreeOffset = 0;
             for (int i = 0; i < Scale.ScaleDegrees.Length; i++)
-                if (CurrentScaleDegree.Equals(Scale.ScaleDegrees[i])) { x = i; break; }
-
-            string[] temp = new string[Scale.ScaleDegrees.Length];
+                if (ScaleDegree.Equals(Scale.ScaleDegrees[i])) { scaleDegreeOffset = Scale.ScaleDegrees.Length - i; break; }
 
             for (int i = 0; i < temp.Length; i++)
             {
-                temp[i] = CurrentKey.GetKeyAbove(Scale.ScaleDegrees[(x + i) % Scale.ScaleDegrees.Length].AsInterval()).Name;
+                Triads.Triad triad = Scale.ScaleDegrees[(i + modeOffset) % Scale.ScaleDegrees.Length].GetTriadQuality(
+                   Scale.ScaleDegrees[(i + 2 + modeOffset) % Scale.ScaleDegrees.Length],
+                   Scale.ScaleDegrees[(i + 4 + modeOffset) % Scale.ScaleDegrees.Length]);
+
+                temp[(i + scaleDegreeOffset) % Scale.ScaleDegrees.Length] =
+                    Keys[0].GetInterval(Keys[i]).ToRoman().Name + triad.Name + "\n" +
+                    Keys[i].Name + triad.Name;
             }
 
             return temp;
         }
 
-
-        public Key ScrollKey(Interval delta)
+        public ScaleDegree GetClickedScaleDegree(GameObject go)
         {
-            this.RotateCounterClockwise();
-            return CurrentKey;
+            for (int i = 0; i < PointCards.Length; i++)
+                if (go.transform.IsChildOf(PointCards[i].TMP.gameObject.transform))
+                    return Scale.ScaleDegrees[(i + Scale.GetIndex(ScaleDegree)) % Scale.ScaleDegrees.Length];
+
+            return ScaleDegree;
         }
     }
 }

@@ -47,7 +47,6 @@ public class Card
     private SpriteRenderer _sr = null;
     public SpriteRenderer SpriteRenderer => _sr != null ? _sr : _sr = GO.AddComponent<SpriteRenderer>();
 
-
     private TextMeshProUGUI _tmp;
     public TextMeshProUGUI TMP
     {

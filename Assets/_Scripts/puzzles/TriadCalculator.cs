@@ -4,68 +4,80 @@ using MusicTheory.Scales;
 using MusicTheory.ScaleDegrees;
 using MusicTheory.Keys;
 using MusicTheory.Modes;
+using MusicTheory.Arithmetic;
+using System;
 
 public class TriadCalculator
 {
-    public TriadCalculator(Vector2 rootPos, Vector2 thrPos, Vector2 fthPos)
+    public TriadCalculator()
     {
-        RootPos = rootPos;
-        ThrPos = thrPos;
-        FthPos = fthPos;
-
         _ = RootCard;
         _ = ThirdCard;
         _ = FifthCard;
+        _ = HowTo;
 
-        ScaleCard = new(new Vector2(-Cam.UIOrthoX + 2.15f, -0.5f));
+        ScaleCard = new(new Vector2(Cam.UIOrthoX - 2.15f, -4f));
         ChordCard = new(RootPos + (Vector2.down * 2));
+        ModeCard = new(new Vector2(Cam.UIOrthoX - 2.15f, -3f));
+
+        Keys = Key.GetKeys(Scale, Mode);
 
         CircleOfFifths = new ChromaticKeyCircle("Key Circle Of Fifths",
-            2,
-            new Vector2(-Cam.UIOrthoX + 2.15f, Cam.UIOrthoY - 2.15f),
-            new C(),
+            2.25f,
+            new Vector2(-Cam.UIOrthoX + 2.15f, 0),
+            Key,
             ChromaticKeyCircle.CircleType.Fifths);
 
-        RomanCircle = new RomanCircle("Roman Diatonic Circle of Steps",
-            1.65f,
-            new Vector2(-Cam.UIOrthoX + 2.15f, -Cam.UIOrthoY + 1.35f),
-            new Major(),
-            ModeDegree.Prime,
-            Scale.ScaleDegrees[0],
-            RomanCircle.CircleType.Seconds);
+        //RomanCircle = new RomanCircle("Roman Diatonic Circle of Steps",
+        //    1.65f,
+        //    new Vector2(-Cam.UIOrthoX + 2.15f, -Cam.UIOrthoY + 1.35f),
+        //    new Major(),
+        //    Mode,
+        //    Scale.ScaleDegrees[0],
+        //    RomanCircle.CircleType.Seconds);
 
         DiatonicKeyCircle = new DiatonicKeyCircle(
             "Nominal Circle of Steps",
-             1.25f,
-             new Vector2(-Cam.UIOrthoX + 6.45f, -Cam.UIOrthoY + 1.35f),
-             CurrentKey,
+             2.25f,
+             new Vector2(Cam.UIOrthoX - 2.15f, 1f),
+             Keys,
              Scale,
-             CurrentScaleDegree,
+             Mode,
+             ScaleDegree,
              DiatonicKeyCircle.CircleType.Seconds);
+        //DiatonicKeyCircle = this.NewDiatonicKeyCircle();
+        //CircleOfFifths = this.NewChromaticKeyCircleOfFifths();
+        //RomanCircle = this.NewDiatonicRomanCircle();
 
         this.SetChordTones();
+
+        TriadAudio = new(new VolumeData());
     }
 
     public void SelfDestruct()
     {
         ScaleCard.SelfDestruct();
-        Parent.SelfDestruct();
+        ChordCard.SelfDestruct();
+        ModeCard.SelfDestruct();
         CircleOfFifths.SelfDestruct();
-        RomanCircle.SelfDestruct();
+        //RomanCircle.SelfDestruct();
         DiatonicKeyCircle.SelfDestruct();
+        TriadAudio.SelfDestruct();
+        Parent.SelfDestruct();
     }
 
-    Vector2 RootPos; Vector2 ThrPos; Vector2 FthPos;
+    Vector2 RootPos = new Vector2(0, -1.5f);
+    Vector2 ThrPos = new Vector2(0, 0);
+    Vector2 FthPos = new Vector2(0, 1.5f);
 
-    private Mode _mode;
+    private Mode _mode = new Ionian();
     public Mode Mode
     {
         get => _mode;
         set
         {
             _mode = value;
-            ScaleCard.Mode = value;
-            // DiatonicChords.Mode = value;
+            ModeCard.Mode = Mode;
         }
     }
 
@@ -77,32 +89,29 @@ public class TriadCalculator
         {
             _scale = value;
             ScaleCard.Scale = value;
-            RomanCircle.Scale = value;
+            Mode = Scale.Modes[0];
         }
     }
 
     private Key _currentKey = new C();
-    public Key CurrentKey
+    public Key Key
     {
         get => _currentKey;
         set
         {
             _currentKey = value;
-            CircleOfFifths.CurrentKey = value;
-            Root = Scale.Root(CurrentScaleDegree, value);
+            Root = Scale.Root(ScaleDegree, value);
         }
     }
 
-    private ScaleDegree _curentScaleDegree = new _1();
-    public ScaleDegree CurrentScaleDegree
+    private ScaleDegree _scaleDegree = new _1();
+    public ScaleDegree ScaleDegree
     {
-        get => _curentScaleDegree;
+        get => _scaleDegree;
         set
         {
-            _curentScaleDegree = value;
-            Root = Scale.Root(value, CurrentKey);
-            RomanCircle.CurrentScaleDegree = value;
-            DiatonicKeyCircle.CurrentScaleDegree = value;
+            _scaleDegree = value;
+            Root = Scale.Root(value, Key);
         }
     }
 
@@ -117,31 +126,57 @@ public class TriadCalculator
         }
     }
 
-    public void ScrollRoman(int delta)
+    public Key[] Keys;
+
+    public void ScrollRoman(GameObject go)
     {
-        CurrentScaleDegree = RomanCircle.ScrollRoman(delta);
-        DiatonicKeyCircle.ScrollKey(new MusicTheory.Intervals.P1());
-        Root = Scale.Root(CurrentScaleDegree, CurrentKey);
+        //ScaleDegree = Scale.ScaleDegrees[(Scale.GetIndex(ScaleDegree) + 1) % Scale.ScaleDegrees.Length];
+        ScaleDegree = DiatonicKeyCircle.GetClickedScaleDegree(go);
+        Root = Scale.Root(ScaleDegree, Key);
+        UpdateCalculator();
     }
 
-    public void ScrollKey(MusicTheory.Intervals.Interval delta)
+    public void ScrollKey(GameObject go)
     {
-        CurrentKey = CircleOfFifths.ScrollKey(delta);
+        ScaleDegree = new _1();
+        Key = CircleOfFifths.GetClickedKey(go);
+
+        UpdateCalculator();
     }
 
-    public ChromaticKeyCircle CircleOfFifths;
-    public RomanCircle RomanCircle;
-    public DiatonicKeyCircle DiatonicKeyCircle;
+    internal void ScrollScales()
+    {
+        Scale++;
+        ScaleDegree = new _1();
+
+        UpdateCalculator();
+    }
+
+    internal void ScrollModes()
+    {
+        Mode = Scale.Modes[(Scale.GetIndex(Mode) + 1) % Scale.Modes.Length];
+
+        this.SetChordTones();
+        UpdateCalculator();
+    }
+
+    public ChromaticKeyCircle CircleOfFifths = null;
+    //public RomanCircle RomanCircle = null;
+    public DiatonicKeyCircle DiatonicKeyCircle = null;
 
     private Card _parent;
     public Card Parent => _parent ??= new Card(nameof(TriadCalculator), null);
 
     public ScaleCard ScaleCard;
+    public ModeCard ModeCard;
     public ChordCard ChordCard;
+
+    public readonly Triad_AudioSystem TriadAudio;
 
     private Card _rootCard;
     public Card RootCard => _rootCard ??= Parent.CreateChild(nameof(RootCard), Parent.Canvas.transform, Parent.Canvas)
             .SetTextString("Root")
+            .SetTextColor(new Color(1f, 1f, .6f))
             .SetTMPPosition(RootPos)
             .SetTextAlignment(TMPro.TextAlignmentOptions.Center)
             .AutoSizeTextContainer(true)
@@ -152,6 +187,7 @@ public class TriadCalculator
     private Card _thirdCard;
     public Card ThirdCard => _thirdCard ??= Parent.CreateChild(nameof(ThirdCard), Parent.Canvas.transform, Parent.Canvas)
             .SetTextString("Third")
+            .SetTextColor(new Color(1f, 1f, .6f))
             .SetTMPPosition(ThrPos)
             .SetTextAlignment(TMPro.TextAlignmentOptions.Center)
             .AutoSizeTextContainer(true)
@@ -162,6 +198,7 @@ public class TriadCalculator
     private Card _fifthCard;
     public Card FifthCard => _fifthCard ??= Parent.CreateChild(nameof(FifthCard), Parent.Canvas.transform, Parent.Canvas)
             .SetTextString("Fifth")
+            .SetTextColor(new Color(1f, 1f, .6f))
             .SetTMPPosition(FthPos)
             .SetTextAlignment(TMPro.TextAlignmentOptions.Center)
             .AutoSizeTextContainer(true)
@@ -169,6 +206,24 @@ public class TriadCalculator
             .AutoSizeFont(true)
             .AllowWordWrap(false);
 
+    public void UpdateCalculator()
+    {
+        Keys = Key.GetKeys(Scale, Mode);
+        CircleOfFifths = this.NewChromaticKeyCircleOfFifths();
+        //RomanCircle = this.NewDiatonicRomanCircle();
+        DiatonicKeyCircle = this.NewDiatonicKeyCircle();
 
+        this.SetChordTones();
+        this.PlayTriad();
+    }
 
+    Card _howTo;
+    Card HowTo => _howTo ??= Parent.CreateChild(nameof(HowTo), Parent.Canvas.transform, Parent.Canvas)
+        .SetTextString("Click/tap on left circle to select key, right circle to select scale degree.\nClick/tap on scale, or mode to scroll.")
+        .AutoSizeTextContainer(true)
+        .SetTextColor(new Color(1f, 1f, .6f))
+        .AutoSizeFont(true)
+        .SetFontScale(.5f, .5f)
+        .SetTextAlignment(TMPro.TextAlignmentOptions.Center)
+        .SetTMPPosition(0, Cam.UIOrthoY - .5f);
 }

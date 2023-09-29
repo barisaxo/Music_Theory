@@ -2,11 +2,10 @@ using System;
 using MusicTheory.Steps;
 using MusicTheory.ScaleDegrees;
 
-namespace MusicTheory.Intervals
+namespace MusicTheory.Arithmetic
 {
     public static class IntervalSystems
     {
-
         //public static IntervalEnum GetInterval(this ScaleDegree s1, ScaleDegree s2)
         //{
         //    if ((int)s1 > 12 || (int)s2 > 12)
@@ -29,30 +28,53 @@ namespace MusicTheory.Intervals
         //public static Quantity GetQuantity(this ScaleDegree left, ScaleDegree right) =>
         //    (QuantityEnum)((int)right - (int)left < (int)right ? (int)left + 7 : (int)left);
 
-        public static Quantity Invert(this Quantity quantity) => quantity switch
+        public static Intervals.Quantity Invert(this Intervals.Quantity quantity) => quantity switch
         {
-            Unison => new Octave(),
-            Second => new Seventh(),
-            Third => new Sixth(),
-            Fourth => new Fifth(),
-            Fifth => new Fourth(),
-            Sixth => new Third(),
-            Seventh => new Second(),
-            Octave => new Unison(),
-            _ => throw new ArgumentOutOfRangeException(nameof(Quantity), quantity.ToString())
+            Intervals.Unison => new Intervals.Octave(),
+            Intervals.Second => new Intervals.Seventh(),
+            Intervals.Third => new Intervals.Sixth(),
+            Intervals.Fourth => new Intervals.Fifth(),
+            Intervals.Fifth => new Intervals.Fourth(),
+            Intervals.Sixth => new Intervals.Third(),
+            Intervals.Seventh => new Intervals.Second(),
+            Intervals.Octave => new Intervals.Unison(),
+            _ => throw new ArgumentOutOfRangeException(nameof(Intervals.Quantity), quantity.ToString())
         };
 
-        public static Quality Invert(this Quality quality) => quality switch
+        public static Intervals.Quality Invert(this Intervals.Quality quality) => quality switch
         {
-            Major => new Minor(),
-            Minor => new Major(),
-            Augmented => new Diminished(),
-            Diminished => new Augmented(),
-            Perfect => quality,
-            _ => throw new ArgumentOutOfRangeException(nameof(Quality), quality.ToString())
+            Intervals.Major => new Intervals.Minor(),
+            Intervals.Minor => new Intervals.Major(),
+            Intervals.Augmented => new Intervals.Diminished(),
+            Intervals.Diminished => new Intervals.Augmented(),
+            Intervals.Perfect => quality,
+            _ => throw new ArgumentOutOfRangeException(nameof(Intervals.Quality), quality.ToString())
         };
 
-        public static Interval Invert(this Interval i) => IntervalEnum.Find((i.Quality.Invert(), i.Quantity.Invert()));
+        public static Intervals.Interval Invert(this Intervals.Interval i) => Intervals.IntervalEnum.Find((i.Quality.Invert(), i.Quantity.Invert()));
+
+        public static RomanNumerals.RomanNumeral ToRoman(this Intervals.Interval interval) =>
+       interval switch
+       {
+           Intervals.P1 => new RomanNumerals.I(),
+           Intervals.M2 => new RomanNumerals.II(),
+           Intervals.M3 => new RomanNumerals.III(),
+           Intervals.P4 => new RomanNumerals.IV(),
+           Intervals.P5 => new RomanNumerals.V(),
+           Intervals.M6 => new RomanNumerals.VI(),
+           Intervals.M7 => new RomanNumerals.VII(),
+           Intervals.mi2 => new RomanNumerals.bII(),
+           Intervals.mi3 => new RomanNumerals.bIII(),
+           Intervals.d4 => new RomanNumerals.III(),
+           Intervals.d5 => new RomanNumerals.bV(),
+           Intervals.mi6 => new RomanNumerals.bVI(),
+           Intervals.d7 => new RomanNumerals.dVII(),
+           Intervals.mi7 => new RomanNumerals.bVII(),
+           Intervals.A2 => new RomanNumerals.sII(),
+           Intervals.A4 => new RomanNumerals.sIV(),
+           Intervals.A5 => new RomanNumerals.sV(),
+           _ => throw new System.ArgumentOutOfRangeException(interval.Name)
+       };
     }
 }
 

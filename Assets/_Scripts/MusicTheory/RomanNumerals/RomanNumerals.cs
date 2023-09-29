@@ -93,6 +93,6 @@ namespace MusicTheory.RomanNumerals
         //}
     }
 
-    public enum ChordTone { Root, Third, Fifth, Seventh, Ninth, Eleventh, Thirteenth }
+    //public enum ChordTone { Root, Third, Fifth, Seventh, Ninth, Eleventh, Thirteenth }
 
 }
