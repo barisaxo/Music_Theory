@@ -4,20 +4,20 @@ using UnityEngine;
 
 public static class Frequencies
 {
-    public static int GetHertz(this MusicTheory.Keys.Key note) => note.Id switch
+    public static float GetHertz(this MusicTheory.Keys.Key note) => note.Id switch
     {
-        0 => 262,
-        1 => 277,
-        2 => 294,
-        3 => 311,
-        4 => 330,
-        5 => 349,
-        6 => 370,
-        7 => 392,
-        8 => 415,
-        9 => 440,
-        10 => 466,
-        11 => 247 * 2,
+        0 => 261.63f,
+        1 => 277.18f,
+        2 => 293.66f,
+        3 => 311.13f,
+        4 => 329.63f,
+        5 => 349.23f,
+        6 => 369.99f,
+        7 => 392.00f,
+        8 => 415.30f,
+        9 => 440.00f,
+        10 => 466.16f,
+        11 => 493.88f,
         _ => throw new System.ArgumentOutOfRangeException()
     };
 

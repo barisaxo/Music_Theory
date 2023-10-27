@@ -12,9 +12,8 @@ namespace MusicTheory.RomanNumerals
         public RomanEnum Enum;
         public int Id => Enum.Id;
         public string Name => Enum.Name;
-        //public static explicit operator RomanNumeral(ScaleDegree s) => new((RomanEnum)s);
         public static explicit operator int(RomanNumeral r) => r.Enum.Id;
-        public static explicit operator RomanNumeral(int i) => Enumeration.FindId<RomanEnum>(i % 12);
+        public static explicit operator RomanNumeral(int i) => Enumeration.FindId<RomanEnum>(i);
     }
 
     public class I : RomanNumeral { public I() : base(RomanEnum.I) { } }
@@ -56,7 +55,6 @@ namespace MusicTheory.RomanNumerals
         public static RomanEnum bVII = new(10, nameof(bVII));
         public static RomanEnum VII = new(11, nameof(VII));
 
-        //public static explicit operator RomanEnum(ScaleDegree s) => FindId<RomanEnum>(s);
         public static explicit operator RomanEnum(int i) => FindId<RomanEnum>(i);
         public static implicit operator RomanNumeral(RomanEnum r) => r switch
         {
@@ -80,19 +78,5 @@ namespace MusicTheory.RomanNumerals
         };
     }
 
-    public static class RomanSystems
-    {
-        //public static RomanNumeral[] DiatonicRomans(this RomanNumeral _) => new RomanNumeral[] { new I(), new II(), new III(), new IV(), new V(), new VI(), new VII() };
-
-        //public static RomanNumeral ToRoman(this ScaleDegree s) => (RomanNumeral)s;
-
-        //public static Key GetChordTone(this Scale s, int currentScaleDegree, ChordTone c, Key k)
-        //{
-        //    UnityEngine.Debug.Log((Key)s.ScaleDegrees[(currentScaleDegree + (int)c) % s.ScaleDegrees.Length] + " " + k.Name);
-        //    return ((Key)s.ScaleDegrees[(currentScaleDegree + (int)c) % s.ScaleDegrees.Length]);
-        //}
-    }
-
-    //public enum ChordTone { Root, Third, Fifth, Seventh, Ninth, Eleventh, Thirteenth }
 
 }

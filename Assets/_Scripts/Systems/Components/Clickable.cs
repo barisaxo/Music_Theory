@@ -38,6 +38,7 @@ internal sealed class ClickFeedback
                 RestoreColor();
                 _clickedGO = null;
             }
+
             else if (_clickedGO != value)
             {
                 if (_clickedGO != null)
@@ -50,21 +51,6 @@ internal sealed class ClickFeedback
                 if (_clickedGO.TryGetComponent(out SpriteRenderer sr)) spriteFeedback.Add((sr, sr.color));
                 if (_clickedGO.TryGetComponent(out TextMeshProUGUI tmp)) tmpFeedback.Add((tmp, tmp.color));
                 if (_clickedGO.TryGetComponent(out Image img)) imageFeedback.Add((img, img.color));
-
-                //foreach (SpriteRenderer sr in _clickedGO.GetComponentsInChildren<SpriteRenderer>())
-                //{
-                //    spriteFeedback.Add((sr, sr.color));
-                //}
-
-                //foreach (TextMeshProUGUI tmp in _clickedGO.GetComponentsInChildren<TextMeshProUGUI>())
-                //{
-                //    tmpFeedback.Add((tmp, tmp.color));
-                //}
-
-                //foreach (Image img in _clickedGO.GetComponentsInChildren<Image>())
-                //{
-                //    imageFeedback.Add((img, img.color));
-                //}
 
                 AlterColor();
             }
@@ -79,10 +65,10 @@ internal sealed class ClickFeedback
             return Click.Up;
         }
 
-        if (Cam.Io.Camera.orthographic)
+        if (Cam.Io.UICamera.orthographic)
         {
             RaycastHit2D hitUI = Physics2D.Raycast(mousePos, Vector2.zero);
-            RaycastHit2D hit = Physics2D.Raycast(Cam.Io.Camera.ScreenToWorldPoint(mousePos), Vector2.zero);
+            RaycastHit2D hit = Physics2D.Raycast(Cam.Io.UICamera.ScreenToWorldPoint(mousePos), Vector2.zero);
             if (hitUI.collider != null && hitUI.collider.gameObject.TryGetComponent<Clickable>(out _))
             {
                 ClickedGO = hitUI.collider.gameObject;
@@ -123,7 +109,7 @@ internal sealed class ClickFeedback
     {
         for (int i = 0; i < spriteFeedback.Count; i++)
         {
-            spriteFeedback[i].sr.color *= Color.gray;
+            spriteFeedback[i].sr.color *= new Color(1, 1, 1, .65f);
         }
 
         for (int i = 0; i < tmpFeedback.Count; i++)

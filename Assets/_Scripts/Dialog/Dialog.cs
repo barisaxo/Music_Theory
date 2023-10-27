@@ -10,7 +10,7 @@ namespace Dialog
             Dialogue = dialogue;
             _ = DialogCard;
             _ = TextBackground;
-
+            _ = DialogText;
             CurrentLine = Dialogue.FirstLine;
             NPCIcon(Dialogue.FirstLine);
         }
@@ -32,7 +32,7 @@ namespace Dialog
             .SetImageSize(Vector2.one * 9001)
             .SetImageSprite(Assets.White)
             .SetImageColor(new Color(0f, .0f, 0f, .666f))
-            .SetCanvasSortingOrder(1);
+            .SetCanvasSortingOrder(-1);
 
         private Card[] _npcIcon;
         public void NPCIcon(Line line) => NPCIcon(line.SpeakerIcon, line.SpeakerColor);
@@ -60,15 +60,22 @@ namespace Dialog
         private Card _dialogCard;
         public Card DialogCard => _dialogCard ??= new Card(nameof(DialogCard), Parent.transform)
             .SetTextAlignment(TMPro.TextAlignmentOptions.TopLeft)
-            .SetTMPSize(new Vector2(3.5f * Cam.Io.Camera.aspect * 2, 4f))
-            .SetImageSize(new Vector2(4f * Cam.Io.Camera.aspect * 2, 5f))
-            .SetPositionAll(new Vector3(0, 2.5f))
+            .SetImageSize(new Vector2(4f * Cam.Io.UICamera.aspect * 2, 5f))
+            .SetImagePosition(new Vector3(0, 2.5f))
+            .SetImageSprite(Assets.White)
+            .SetImageColor(new Color(.15f, .15f, .15f, .65f))
+            .SetCanvasSortingOrder(0);
+
+        private Card _dialogText;
+        public Card DialogText => _dialogText ??= new Card(nameof(DialogText), Parent.transform)
+            .SetTextAlignment(TMPro.TextAlignmentOptions.TopLeft)
+            .SetTMPSize(new Vector2(3.5f * Cam.Io.UICamera.aspect * 2, 4f))
+            .SetTMPPosition(new Vector3(0, 2.5f))
             .SetFontScale(.65f, .65f)
             .AutoSizeFont(true)
             .AllowWordWrap(true)
-            .SetImageSprite(Assets.White)
-            .SetImageColor(new Color(.15f, .15f, .15f, .65f))
-            .ImageClickable();
+            .SetCanvasSortingOrder(1)
+            .TMPClickable();
 
         private VideoPlayer _videoPlayer;
         public VideoPlayer VideoPlayer => _videoPlayer = _videoPlayer != null ? _videoPlayer : SetUpVideo();

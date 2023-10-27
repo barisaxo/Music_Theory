@@ -7,7 +7,5 @@ namespace MusicTheory.Keys
         public static Letter GetLetter(this Key key, ScaleDegrees.ScaleDegree degree) =>
             (LetterEnum)(key.Enum.Letter.Id + degree.Id);
 
-
-
     }
 }

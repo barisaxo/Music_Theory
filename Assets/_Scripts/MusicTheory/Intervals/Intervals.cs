@@ -8,7 +8,7 @@ namespace MusicTheory.Intervals
         public readonly IntervalEnum Enum;
         public int Id => Enum.Id;
         public string Name => Enum.Name;
-        public string Discription => Enum.Description;
+        public string Description => Enum.Description;
         public Quality Quality => Enum.Quality;
         public Quantity Quantity => Enum.Quantity;
 
@@ -97,7 +97,7 @@ namespace MusicTheory.Intervals
 
         public readonly Quality Quality;
         public readonly Quantity Quantity;
-        public string Description => Quantity.Description + " " + Quality.Description;
+        public string Description => Quality.Description + " " + Quantity.Description;
 
         public static readonly IntervalEnum P1 = new(0, nameof(P1), new Perfect(), new Unison());
         public static readonly IntervalEnum mi2 = new(1, nameof(mi2), new Minor(), new Second());
@@ -117,7 +117,7 @@ namespace MusicTheory.Intervals
         public static readonly IntervalEnum d7 = new(9, nameof(d7), new Diminished(), new Seventh());
         public static readonly IntervalEnum mi7 = new(10, nameof(mi7), new Minor(), new Seventh());
         public static readonly IntervalEnum M7 = new(11, nameof(M7), new Major(), new Seventh());
-        public static readonly IntervalEnum P8 = new(12, nameof(P8), new Perfect(), new Octave());
+        public static readonly IntervalEnum P8 = new(0, nameof(P8), new Perfect(), new Octave());
 
         public static explicit operator IntervalEnum(int i) => FindId<IntervalEnum>(i);
         public static explicit operator IntervalEnum((Quality quality, Quantity quantity) i) => Find(i);

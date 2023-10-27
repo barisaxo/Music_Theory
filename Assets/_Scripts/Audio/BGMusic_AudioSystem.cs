@@ -10,11 +10,11 @@ public sealed class BGMusic_AudioSystem : AudioSystem
         VolumeLevelSetting = data.GetScaledLevel(VolumeData.DataItem.BGMusic);
         foreach (var a in AudioSources) a.playOnAwake = true;
 
-        foreach (var a in AudioSources)
-            a.clip = Random.Range(1, 5) switch
-            {
-                _ => throw new System.NotImplementedException()
-            };
+        //foreach (var a in AudioSources)
+        //    a.clip = Random.Range(1, 5) switch
+        //    {
+        //        _ => throw new System.NotImplementedException()
+        //    };
     }
 
     public void NextSong()

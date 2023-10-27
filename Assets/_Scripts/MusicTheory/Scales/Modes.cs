@@ -6,7 +6,7 @@ namespace MusicTheory.Modes
 
     public class Mode
     {
-        public Mode(ScaleEnum parentScale, ModeDegreeEnum mode, string name) { ParentScale = parentScale; Enum = mode; Name = name; }//: base(parentScale.Enum, mode, parentScale.ShiftSteps(mode), parentScale.ScaleDegrees) { Name = name; }
+        public Mode(ScaleEnum parentScale, ModeDegreeEnum mode, string name) { ParentScale = parentScale; Enum = mode; Name = name; }
         public readonly string Name;
         public readonly ScaleEnum ParentScale;
         public readonly ModeDegreeEnum Enum;

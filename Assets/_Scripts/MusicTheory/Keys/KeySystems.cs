@@ -68,7 +68,7 @@ namespace MusicTheory.Arithmetic
             int id = (key.Id + interval.Id) % 12;
 
             Keys.Letter letter = (Keys.LetterEnum)((key.Enum.Letter.Id + interval.Quantity.Id) % 7);
-            Keys.Key newKey = key;
+            Keys.Key newKey = Enumeration.FindId<Keys.KeyEnum>(id);
 
             foreach (var e in Enumeration.ListAll<Keys.KeyEnum>())
             {

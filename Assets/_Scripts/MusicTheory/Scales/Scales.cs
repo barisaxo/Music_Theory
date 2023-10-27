@@ -24,10 +24,6 @@ namespace MusicTheory.Scales
         public string Name => Enum.Name;
         public int Id => Enum.Id;
         public static Scale operator ++(Scale a) => (Scale)((a.Id + 1) % Enumeration.ListAll<ScaleEnum>().Count);
-
-        // public static explicit operator Scale(Scale a, int i) => (Scale)(a.Id + i % Enumeration.ListAll<ScaleEnum>().Count);
-        // public static int operator +(Scale a, int b) => a.Id + b % Enumeration.ListAll<ScaleEnum>().Count;
-        // public static int operator -(Scale a, int b) => a.Id - b % Enumeration.ListAll<ScaleEnum>().Count;
         public static explicit operator Scale(int i) => Enumeration.FindId<ScaleEnum>(i);
     }
 

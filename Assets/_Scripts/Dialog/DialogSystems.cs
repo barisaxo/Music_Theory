@@ -11,7 +11,7 @@ namespace Dialog
         public static void PrintDialog(this Dialog dialog, Action callback)
         {
             dialog.LetType = true;
-            dialog.DialogCard.SetTextString(string.Empty);
+            dialog.DialogText.SetTextString(string.Empty);
 
             TypeDialogViaColor(0, dialog, callback).StartCoroutine();
 
@@ -27,13 +27,13 @@ namespace Dialog
                         if (charMarker == i) printingDialogue += clearFlag;
                     }
 
-                    dialog.DialogCard.SetTextString(printingDialogue);
+                    dialog.DialogText.SetTextString(printingDialogue);
 
                     if (++charMarker == dialog.CurrentLine.SpeakerText.Length) dialog.LetType = false;
                     yield return new WaitForSecondsRealtime(.03f);
                 }
 
-                dialog.DialogCard.SetTextString(dialog.CurrentLine.SpeakerName + dialog.CurrentLine.SpeakerText);
+                dialog.DialogText.SetTextString(dialog.CurrentLine.SpeakerName + dialog.CurrentLine.SpeakerText);
                 callback();
             }
         }

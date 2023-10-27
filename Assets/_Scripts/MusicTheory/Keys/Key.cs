@@ -12,18 +12,12 @@ namespace MusicTheory.Keys
 
         public static int operator -(Key left, Key right) => left.Enum.Id - right.Enum.Id;
         public static int operator +(Key left, Key right) => left.Enum.Id + right.Enum.Id;
-        //public static int operator -(Key left, ScaleDegree right) => left.Enum.Id - right.Enum.Id;
-        //public static int operator +(Key left, ScaleDegree right) => left.Enum.Id + right.Enum.Id;
         public static bool operator ==(Key a, Key b) => a.Enum == b.Enum;
         public static bool operator !=(Key a, Key b) => a.Enum != b.Enum;
         public static bool operator ==(Key a, KeyEnum b) => a.Enum == b;
         public static bool operator !=(Key a, KeyEnum b) => a.Enum != b;
         public override bool Equals(object obj) => obj is Key e && e.Enum == Enum;
         public override int GetHashCode() => HashCode.Combine(Enum);
-        //public static implicit operator KeyEnum(Key key) => key.Enum;
-        //public static explicit operator int(Key key) => key.Enum.Id;
-        //public static explicit operator Key(int i) => Enumeration.FindId<KeyEnum>(i);
-        //public static explicit operator Key(ScaleDegree s) => (Key)(int)s;
         public override string ToString() => Name;
     }
 
@@ -82,8 +76,6 @@ namespace MusicTheory.Keys
             _ => throw new ArgumentOutOfRangeException(key.Id.ToString())
         };
 
-        //todo: make all C notes = 0, all D notes = 1,
-        //      then make Key.Id => Letter.Id + Accidental.Id ??
         public static KeyEnum C = new(0, nameof(C), new _C(), new Natural());
         public static KeyEnum Cs = new(1, "C♯", new _C(), new Sharp());
         public static KeyEnum Db = new(1, nameof(Db), new _D(), new Flat());

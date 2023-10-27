@@ -167,8 +167,14 @@ public static class CardSystems
 
     public static Card ScaleImageSizeToTMP(this Card Card, float scale)
     {
-        Card.Image.rectTransform.sizeDelta = Card.TMP.rectTransform.sizeDelta * scale;
+        WaitAStep().StartCoroutine();
         return Card;
+
+        IEnumerator WaitAStep()
+        {
+            yield return null;
+            Card.Image.rectTransform.sizeDelta = Card.TMP.rectTransform.sizeDelta * scale;
+        }
     }
 
     public static Card SetImageSizeUnscaled(this Card Card, Vector3 size)
@@ -295,6 +301,35 @@ public static class CardSystems
         return Card.SetPositionAll(new Vector3(x, y));
     }
 
-
+    public static Card SetImageToDefaultLayer(this Card card)
+    {
+        card.Image.gameObject.layer = 0;
+        return card;
+    }
+    public static Card SetTMPToDefaultLayer(this Card card)
+    {
+        card.TMP.gameObject.layer = 0;
+        return card;
+    }
+    public static Card SetSpriteToDefaultLayer(this Card card)
+    {
+        card.SpriteRenderer.gameObject.layer = 0;
+        return card;
+    }
+    public static Card SetImageToUILayer(this Card card)
+    {
+        card.Image.gameObject.layer = 5;
+        return card;
+    }
+    public static Card SetTMPToUILayer(this Card card)
+    {
+        card.TMP.gameObject.layer = 5;
+        return card;
+    }
+    public static Card SetSpriteToUILayer(this Card card)
+    {
+        card.SpriteRenderer.gameObject.layer = 5;
+        return card;
+    }
 
 }

@@ -47,7 +47,7 @@ namespace MusicTheory.Arithmetic
                 4 => Intervals.QuantityEnum.Fifth,
                 5 => Intervals.QuantityEnum.Sixth,
                 6 => Intervals.QuantityEnum.Seventh,
-                _ => throw new System.ArgumentOutOfRangeException()
+                _ => throw new System.ArgumentOutOfRangeException(left.Id.ToString() + " " + right.Id.ToString())
             };
         }
 
