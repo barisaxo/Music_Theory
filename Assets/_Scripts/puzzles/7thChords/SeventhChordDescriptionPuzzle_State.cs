@@ -12,27 +12,31 @@ public class SeventhChordDescriptionPuzzle_State : State
     {
         Chord = Enumeration.ListAll<SeventhChordEnum>()[Random.Range(0, Enumeration.ListAll<SeventhChordEnum>().Count)];
 
-        Root = Enumeration.ListAll<KeyEnum>()[Random.Range(0, Enumeration.ListAll<KeyEnum>().Count)];
-        Keyboard = new(3, Root.GetKeyboardNote());
+        Root = ((Key)Enumeration.ListAll<KeyEnum>()[Random.Range(0, Enumeration.ListAll<KeyEnum>().Count)]).GetKeyboardNoteName();
+        Keyboard = new(4, Root);
 
         Third = Chord switch
         {
-            MajorSeventh or DominantSeventh => Root.GetKeyAbove(new MusicTheory.Intervals.M3()),
-            _ => Root.GetKeyAbove(new MusicTheory.Intervals.mi3()),
+            MajorSeventh or DominantSeventh => Root.NoteNameToKey().GetKeyAbove(new MusicTheory.Intervals.M3()).GetKeyboardNoteName(),
+            _ => Root.NoteNameToKey().GetKeyAbove(new MusicTheory.Intervals.mi3()).GetKeyboardNoteName(),
         };
 
         Fifth = Chord switch
         {
-            DiminishedSeventh or HalfDiminishedSeventh => Root.GetKeyAbove(new MusicTheory.Intervals.d5()),
-            _ => Root.GetKeyAbove(new MusicTheory.Intervals.P5()),
+            DiminishedSeventh or HalfDiminishedSeventh => Root.NoteNameToKey().GetKeyAbove(new MusicTheory.Intervals.d5()).GetKeyboardNoteName(),
+            _ => Root.NoteNameToKey().GetKeyAbove(new MusicTheory.Intervals.P5()).GetKeyboardNoteName(),
         };
 
         Seventh = Chord switch
         {
-            MajorSeventh or MinorMajorSeventh => Root.GetKeyAbove(new MusicTheory.Intervals.M7()),
-            DiminishedSeventh => Root.GetKeyAbove(new MusicTheory.Intervals.d7()),
-            _ => Root.GetKeyAbove(new MusicTheory.Intervals.mi7()),
+            MajorSeventh or MinorMajorSeventh => Root.NoteNameToKey().GetKeyAbove(new MusicTheory.Intervals.M7()).GetKeyboardNoteName(),
+            DiminishedSeventh => Root.NoteNameToKey().GetKeyAbove(new MusicTheory.Intervals.d7()).GetKeyboardNoteName(),
+            _ => Root.NoteNameToKey().GetKeyAbove(new MusicTheory.Intervals.mi7()).GetKeyboardNoteName(),
         };
+
+        Third += Third < Root ? 12 : 0;
+        Fifth += Fifth < Root ? 12 : 0;
+        Seventh += Seventh < Root ? 12 : 0;
 
         DataManager.Io.TheoryPuzzleData.ResetHints();
         _ = Question;
@@ -63,18 +67,30 @@ public class SeventhChordDescriptionPuzzle_State : State
         if (go.transform.IsChildOf(Keyboard.Parent.transform))
         {
             Keyboard.InteractWithKey(go);
-            Answer.GO.SetActive(Keyboard.SelectedKeys[1] != null && Keyboard.SelectedKeys[2] != null);
+            Answer.GO.SetActive(
+                Keyboard.SelectedKeys[1] != null &&
+                Keyboard.SelectedKeys[2] != null &&
+                Keyboard.SelectedKeys[3] != null);
         }
 
         else if (go.transform.IsChildOf(Answer.GO.transform))
         {
-            if ((Keyboard.SelectedKeys[1].KeyboardNoteName.NoteNameToKey().Id == Third.Id &&
-                Keyboard.SelectedKeys[2].KeyboardNoteName.NoteNameToKey().Id == Fifth.Id) ||
-                (Keyboard.SelectedKeys[1].KeyboardNoteName.NoteNameToKey().Id == Fifth.Id &&
-                Keyboard.SelectedKeys[2].KeyboardNoteName.NoteNameToKey().Id == Third.Id))
+            bool hasB = false, hasT = false, hasA = false, hasS = false;
+
+            foreach (var key in Keyboard.SelectedKeys)
+            {
+                if (key.KeyboardNoteName == Root) { hasB = true; }
+                else if (key.KeyboardNoteName == Third) { hasT = true; }
+                else if (key.KeyboardNoteName == Fifth) { hasA = true; }
+                else if (key.KeyboardNoteName == Seventh) { hasS = true; }
+            }
+
+            if (hasB && hasT && hasA && hasS)
             {
                 DataManager.Io.TheoryPuzzleData.SolvedPuzzles++;
-                SetStateDirectly(RandomPuzzleSelector.GetRandomPuzzleState());
+                //SetStateDirectly(RandomPuzzleSelector.GetRandomPuzzleState());
+
+                SetStateDirectly(new SeventhChordDescriptionPuzzle_State());
             }
             else
             {
@@ -100,10 +116,10 @@ public class SeventhChordDescriptionPuzzle_State : State
 
     Keyboard Keyboard;
     SeventhChord Chord;
-    Key Root;
-    Key Third;
-    Key Fifth;
-    Key Seventh;
+    KeyboardNoteName Root;
+    KeyboardNoteName Third;
+    KeyboardNoteName Fifth;
+    KeyboardNoteName Seventh;
 
     private Card _answer;
     public Card Answer => _answer ??= new Card(nameof(Answer), null)
@@ -122,7 +138,7 @@ public class SeventhChordDescriptionPuzzle_State : State
 
     private Card _question;
     public Card Question => _question ??= new Card(nameof(Question), null)
-        .SetTextString(Chord.Description + " " + nameof(Chord))
+        .SetTextString(Chord.Description.SpaceAfterCap() + " " + nameof(Chord))
         .SetTMPPosition(new Vector2(0, Cam.UIOrthoY - 1))
         .SetFontScale(.7f, .7f)
         .SetTextAlignment(TMPro.TextAlignmentOptions.Center)

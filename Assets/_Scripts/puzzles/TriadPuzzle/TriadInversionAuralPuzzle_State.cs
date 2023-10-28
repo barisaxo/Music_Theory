@@ -11,51 +11,49 @@ public class TriadInversionAuralPuzzle_State : State
         inversion = Random.Range(1, 3) switch { 0 => Inversion.root, 1 => Inversion.first, _ => Inversion.second };
         Triad = Random.Range(0, 4) switch { 0 => new Minor(), 1 => new Major(), 2 => new Diminished(), _ => new Augmented() };
 
-        Root = Enumeration.ListAll<KeyEnum>()[Random.Range(0, Enumeration.ListAll<KeyEnum>().Count)];
-        Third = Triad switch
+        Key Root = Enumeration.ListAll<KeyEnum>()[Random.Range(0, Enumeration.ListAll<KeyEnum>().Count)];
+        Key Third = Triad switch
         {
             Major or Augmented => Root.GetKeyAbove(new MusicTheory.Intervals.M3()),
             _ => Root.GetKeyAbove(new MusicTheory.Intervals.mi3()),
         };
-        Fifth = Triad switch
+        Key Fifth = Triad switch
         {
             Augmented => Root.GetKeyAbove(new MusicTheory.Intervals.A5()),
             Diminished => Root.GetKeyAbove(new MusicTheory.Intervals.d5()),
             _ => Root.GetKeyAbove(new MusicTheory.Intervals.P5()),
         };
 
-        KeyboardNoteName bottom = (inversion switch
+        Bottom = (inversion switch
         {
             Inversion.root => Root,
             Inversion.first => Third,
             _ => Fifth
-        }).GetKeyboardNote();
-        KeyboardNoteName middle = (inversion switch
+        }).GetKeyboardNoteName();
+
+        Middle = (inversion switch
         {
             Inversion.root => Third,
             Inversion.first => Fifth,
             _ => Root
-        }).GetKeyboardNote();
-        KeyboardNoteName top = (inversion switch
+        }).GetKeyboardNoteName();
+
+        Top = (inversion switch
         {
             Inversion.root => Fifth,
             Inversion.first => Root,
             _ => Third
-        }).GetKeyboardNote();
+        }).GetKeyboardNoteName();
 
-        middle = middle < bottom ? middle + 12 : middle;
-        top = top < bottom ? top + 12 : top;
-
-        BottomAC = AudioParser.GetAudioClipFromKey(bottom);
-        MiddleAC = AudioParser.GetAudioClipFromKey(middle);
-        TopAC = AudioParser.GetAudioClipFromKey(top);
+        Middle += Middle < Bottom ? 12 : 0;
+        Top += Top < Bottom ? 12 : 0;
 
         Keyboard = new(3, (inversion switch
         {
             Inversion.root => Root,
             Inversion.first => Third,
             _ => Fifth
-        }).GetKeyboardNote());
+        }).GetKeyboardNoteName());
 
         DataManager.Io.TheoryPuzzleData.ResetHints();
         _ = Question;
@@ -69,6 +67,9 @@ public class TriadInversionAuralPuzzle_State : State
 
     protected override void EngageState()
     {
+        var BottomAC = AudioParser.GetAudioClipFromKey(Bottom);
+        var MiddleAC = AudioParser.GetAudioClipFromKey(Middle);
+        var TopAC = AudioParser.GetAudioClipFromKey(Top);
         AudioManager.Io.KBAudio.PlayChord(BottomAC, MiddleAC, TopAC);
     }
 
@@ -94,34 +95,20 @@ public class TriadInversionAuralPuzzle_State : State
 
         else if (go.transform.IsChildOf(Answer.GO.transform))
         {
-            Key root = inversion switch
+            bool hasB = false, hasM = false, hasT = false;
+            foreach (var key in Keyboard.SelectedKeys)
             {
-                Inversion.root => Keyboard.SelectedKeys[0].KeyboardNoteName.NoteNameToKey(),
-                Inversion.second => Keyboard.SelectedKeys[1].KeyboardNoteName.NoteNameToKey(),
-                _ => Keyboard.SelectedKeys[2].KeyboardNoteName.NoteNameToKey(),
-            };
+                if (key.KeyboardNoteName == Bottom) { hasB = true; }
+                else if (key.KeyboardNoteName == Middle) { hasM = true; }
+                else if (key.KeyboardNoteName == Top) { hasT = true; }
+            }
 
-            Key third = inversion switch
-            {
-                Inversion.first => Keyboard.SelectedKeys[0].KeyboardNoteName.NoteNameToKey(),
-                Inversion.root => Keyboard.SelectedKeys[1].KeyboardNoteName.NoteNameToKey(),
-                _ => Keyboard.SelectedKeys[2].KeyboardNoteName.NoteNameToKey(),
-            };
-
-            Key fifth = inversion switch
-            {
-                Inversion.second => Keyboard.SelectedKeys[0].KeyboardNoteName.NoteNameToKey(),
-                Inversion.first => Keyboard.SelectedKeys[1].KeyboardNoteName.NoteNameToKey(),
-                _ => Keyboard.SelectedKeys[2].KeyboardNoteName.NoteNameToKey(),
-            };
-
-            if ((root.Id == Root.Id || third.Id == Root.Id || fifth.Id == Root.Id) &&
-                (root.Id == Third.Id || third.Id == Third.Id || fifth.Id == Third.Id) &&
-                (root.Id == Fifth.Id || fifth.Id == Fifth.Id || third.Id == Fifth.Id))
+            if (hasB && hasM && hasT)
             {
                 DataManager.Io.TheoryPuzzleData.SolvedPuzzles++;
                 SetStateDirectly(RandomPuzzleSelector.GetRandomPuzzleState());
             }
+
             else
             {
                 if (DataManager.Io.TheoryPuzzleData.PuzzleDifficulty == PuzzleDifficulty.Challenge &&
@@ -146,6 +133,9 @@ public class TriadInversionAuralPuzzle_State : State
             if (DataManager.Io.TheoryPuzzleData.HintsRemaining > 0)
             {
                 DataManager.Io.TheoryPuzzleData.HintsRemaining--;
+                var BottomAC = AudioParser.GetAudioClipFromKey(Bottom);
+                var MiddleAC = AudioParser.GetAudioClipFromKey(Middle);
+                var TopAC = AudioParser.GetAudioClipFromKey(Top);
                 AudioManager.Io.KBAudio.PlayChord(BottomAC, MiddleAC, TopAC);
             }
         }
@@ -178,12 +168,15 @@ public class TriadInversionAuralPuzzle_State : State
     Inversion inversion;
     Keyboard Keyboard;
     Triad Triad;
-    Key Root;
-    Key Third;
-    Key Fifth;
-    AudioClip BottomAC;
-    AudioClip MiddleAC;
-    AudioClip TopAC;
+    //Key Root;
+    //Key Third;
+    //Key Fifth;
+    KeyboardNoteName Bottom;
+    KeyboardNoteName Middle;
+    KeyboardNoteName Top;
+    //AudioClip BottomAC;
+    //AudioClip MiddleAC;
+    //AudioClip TopAC;
     readonly AudioParser AudioParser = new();
 
 

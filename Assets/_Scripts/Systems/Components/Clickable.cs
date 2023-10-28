@@ -65,41 +65,25 @@ internal sealed class ClickFeedback
             return Click.Up;
         }
 
-        if (Cam.Io.UICamera.orthographic)
-        {
-            RaycastHit2D hitUI = Physics2D.Raycast(mousePos, Vector2.zero);
-            RaycastHit2D hit = Physics2D.Raycast(Cam.Io.UICamera.ScreenToWorldPoint(mousePos), Vector2.zero);
-            if (hitUI.collider != null && hitUI.collider.gameObject.TryGetComponent<Clickable>(out _))
-            {
-                ClickedGO = hitUI.collider.gameObject;
-            }
-            else if (hit.collider != null)
-            {
-                ClickedGO = hit.collider.gameObject;
-            }
-            else
-            {
-                ClickedGO = null;
-            }
-        }
+        RaycastHit2D hitUI = Physics2D.Raycast(mousePos, Vector2.zero);
+        RaycastHit2D hitGO = Physics2D.Raycast(Cam.Io.UICamera.ScreenToWorldPoint(mousePos), Vector2.zero);
+        RaycastHit2D hitNoUI = Physics2D.GetRayIntersection(Cam.Io.Camera.ScreenPointToRay(mousePos));
 
+        if (hitUI.collider != null && hitUI.collider.gameObject.TryGetComponent<Clickable>(out _))
+        {
+            ClickedGO = hitUI.collider.gameObject;
+        }
+        else if (hitGO.collider != null)
+        {
+            ClickedGO = hitGO.collider.gameObject;
+        }
+        else if (hitNoUI.collider != null && hitNoUI.collider.gameObject.TryGetComponent<Clickable>(out _))
+        {
+            ClickedGO = hitNoUI.collider.gameObject;
+        }
         else
         {
-            RaycastHit2D hitUI = Physics2D.Raycast(mousePos, Vector2.zero);
-            RaycastHit2D hitGO = Physics2D.GetRayIntersection(Cam.Io.Camera.ScreenPointToRay(mousePos));
-
-            if (hitUI.collider != null && hitUI.collider.gameObject.TryGetComponent<Clickable>(out _))
-            {
-                ClickedGO = hitUI.collider.gameObject;
-            }
-            else if (hitGO.collider != null && hitGO.collider.gameObject.TryGetComponent<Clickable>(out _))
-            {
-                ClickedGO = hitGO.collider.gameObject;
-            }
-            else
-            {
-                ClickedGO = null;
-            }
+            ClickedGO = null;
         }
 
         return Click.Down;

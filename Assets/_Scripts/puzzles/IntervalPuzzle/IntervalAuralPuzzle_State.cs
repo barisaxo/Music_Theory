@@ -12,8 +12,8 @@ public class IntervalAuralPuzzle_State : State
         Bottom = Enumeration.ListAll<KeyEnum>()[Random.Range(0, Enumeration.ListAll<KeyEnum>().Count)];
         Top = Enumeration.ListAll<KeyEnum>()[Random.Range(0, Enumeration.ListAll<KeyEnum>().Count)];
 
-        BottomKey = Bottom.GetKeyboardNote();
-        TopKey = Top.GetKeyboardNote();
+        BottomKey = Bottom.GetKeyboardNoteName();
+        TopKey = Top.GetKeyboardNoteName();
         TopKey += Top.Id <= Bottom.Id ? 12 : 0;
 
         Debug.Log(Bottom.Name + " : " + BottomKey.ToString() + ", " + Top.Name + " : " + TopKey.ToString());

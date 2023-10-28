@@ -26,7 +26,7 @@ public class KeyboardKey
         SR = Go.AddComponent<SpriteRenderer>();
         SR.sprite = Assets.White;
         SR.color = KeyColor == KeyColor.White ? KeyboardWhite : KeyboardBlack;
-        Go.AddComponent<BoxCollider2D>();
+        //Go.AddComponent<BoxCollider2D>();
         Go.AddComponent<Clickable>();
 
         if (KeyColor == KeyColor.White)

@@ -224,7 +224,7 @@ public enum KeyboardNoteName
 
 public static class KeyboardSystems
 {
-    public static KeyboardNoteName GetKeyboardNote(this MusicTheory.Keys.Key key) => key.Id switch
+    public static KeyboardNoteName GetKeyboardNoteName(this MusicTheory.Keys.Key key) => key.Id switch
     {
         0 => KeyboardNoteName.C3,
         1 => KeyboardNoteName.Db3,

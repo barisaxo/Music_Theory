@@ -23,10 +23,10 @@ public abstract class State
     {
         InputKey.ButtonEvent -= GPInput;
         InputKey.StickEvent -= GPStickInput;
-        InputKey.RStickAltXEvent -= RAltXInput;
-        InputKey.RStickAltYEvent -= RAltYInput;
+        //InputKey.RStickAltXEvent -= RAltXInput;
+        //InputKey.RStickAltYEvent -= RAltYInput;
         InputKey.MouseClickEvent -= Clicked;
-        MonoHelper.OnUpdate -= RStickAltReadLoop;
+        //MonoHelper.OnUpdate -= RStickAltReadLoop;
         MonoHelper.OnUpdate -= UpdateStickInput;
     }
 
@@ -47,10 +47,10 @@ public abstract class State
     {
         InputKey.ButtonEvent += GPInput;
         InputKey.StickEvent += GPStickInput;
-        InputKey.RStickAltXEvent += RAltXInput;
-        InputKey.RStickAltYEvent += RAltYInput;
+        //InputKey.RStickAltEvent += RStick;
+        //InputKey.RStickAltYEvent += RAltYInput;
         InputKey.MouseClickEvent += Clicked;
-        MonoHelper.OnUpdate += RStickAltReadLoop;
+        //MonoHelper.OnUpdate += RStickAltReadLoop;
         MonoHelper.OnUpdate += UpdateStickInput;
     }
 
@@ -122,7 +122,6 @@ public abstract class State
 
     #region INPUT
 
-    protected virtual void ClickedOn(GameObject go) { }
     protected virtual void DirectionPressed(Dir dir) { }
     protected virtual void WestPressed() { }
     protected virtual void ConfirmPressed() { }
@@ -138,12 +137,7 @@ public abstract class State
     protected virtual void L3Pressed() { }
     protected virtual void LStickInput(Vector2 v2) { }
     protected virtual void RStickInput(Vector2 v2) { }
-
-    #endregion INPUT
-
-
-    #region INPUT HANDLING
-
+    protected virtual void ClickedOn(GameObject go) { }
     protected virtual Click Clicked(MouseAction action, Vector3 mousePos)
     {
         if (action != MouseAction.LUp) return Click.Down;
@@ -234,52 +228,10 @@ public abstract class State
         if (RStick != Vector2.zero) RStickInput(RStick);
     }
 
-    ///nintendo switch R sticks are weird
-    private bool NewRStickAltThisFrame;
 
-    private Vector2 RStickAlt => new(RStickAltX, RStickAltY);
-    private float _rStickAltX;
+    #endregion INPUT
 
-    private float RStickAltX
-    {
-        get => _rStickAltX;
-        set
-        {
-            NewRStickAltThisFrame = true;
-            _rStickAltX = value;
-        }
-    }
-
-    private float _rStickAltY;
-
-    private float RStickAltY
-    {
-        get => _rStickAltY;
-        set
-        {
-            NewRStickAltThisFrame = true;
-            _rStickAltY = value;
-        }
-    }
-
-    private void RAltXInput(float f)
-    {
-        RStickAltX = f;
-    }
-
-    private void RAltYInput(float f)
-    {
-        RStickAltY = f;
-    }
-
-    private void RStickAltReadLoop()
-    {
-        if (!NewRStickAltThisFrame) return;
-        RStickInput(RStickAlt);
-        NewRStickAltThisFrame = false;
-    }
-
-    #endregion INPUT HANDLING
 }
 
 public enum Click { Down, Up, Hit }
+

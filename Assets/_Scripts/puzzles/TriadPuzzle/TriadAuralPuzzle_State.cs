@@ -13,7 +13,7 @@ public class TriadAuralPuzzle_State : State
         Debug.Log(Triad.Description);
 
         Root = Enumeration.ListAll<KeyEnum>()[Random.Range(0, Enumeration.ListAll<KeyEnum>().Count)];
-        Keyboard = new(3, Root.GetKeyboardNote());
+        Keyboard = new(3, Root.GetKeyboardNoteName());
 
         Third = Triad switch
         {
@@ -28,13 +28,13 @@ public class TriadAuralPuzzle_State : State
             _ => Root.GetKeyAbove(new MusicTheory.Intervals.P5()),
         };
 
-        KeyboardNoteName middle = Third.GetKeyboardNote();
-        KeyboardNoteName top = Fifth.GetKeyboardNote();
+        KeyboardNoteName middle = Third.GetKeyboardNoteName();
+        KeyboardNoteName top = Fifth.GetKeyboardNoteName();
 
         middle += Third.Id < Root.Id ? 12 : 0;
         top += Fifth.Id < Third.Id ? 12 : 0;
 
-        BottomAC = AudioParser.GetAudioClipFromKey(Root.GetKeyboardNote());
+        BottomAC = AudioParser.GetAudioClipFromKey(Root.GetKeyboardNoteName());
         MiddleAC = AudioParser.GetAudioClipFromKey(middle);
         TopAC = AudioParser.GetAudioClipFromKey(top);
 
@@ -75,9 +75,9 @@ public class TriadAuralPuzzle_State : State
         }
         else if (go.transform.IsChildOf(Answer.GO.transform))
         {
-            if ((Keyboard.SelectedKeys[1].KeyboardNoteName.NoteNameToKey().Id == Third.Id &&
-                Keyboard.SelectedKeys[2].KeyboardNoteName.NoteNameToKey().Id == Fifth.Id) ||
-                (Keyboard.SelectedKeys[1].KeyboardNoteName.NoteNameToKey().Id == Fifth.Id &&
+            if ((Keyboard.SelectedKeys[1].KeyboardNoteName.NoteNameToKey().Id == Third.Id ||
+                Keyboard.SelectedKeys[1].KeyboardNoteName.NoteNameToKey().Id == Fifth.Id) &&
+                (Keyboard.SelectedKeys[2].KeyboardNoteName.NoteNameToKey().Id == Fifth.Id ||
                 Keyboard.SelectedKeys[2].KeyboardNoteName.NoteNameToKey().Id == Third.Id))
             {
                 DataManager.Io.TheoryPuzzleData.SolvedPuzzles++;
@@ -129,8 +129,8 @@ public class TriadAuralPuzzle_State : State
                     third = Keyboard.SelectedKeys[2].Key;
                 }
 
-                KeyboardNoteName middle = third.GetKeyboardNote();
-                KeyboardNoteName top = fifth.GetKeyboardNote();
+                KeyboardNoteName middle = third.GetKeyboardNoteName();
+                KeyboardNoteName top = fifth.GetKeyboardNoteName();
 
                 middle += third.Id < Root.Id ? 12 : 0;
                 top += fifth.Id < third.Id ? 12 : 0;

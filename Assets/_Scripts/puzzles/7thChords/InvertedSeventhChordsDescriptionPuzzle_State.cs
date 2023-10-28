@@ -1,50 +1,89 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using MusicTheory.Arithmetic;
 using MusicTheory.Keys;
-using MusicTheory.Triads;
+using MusicTheory.SeventhChords;
 using Audio;
 
-public class TriadInversionDescriptionPuzzle_State : State
+public class InvertedSeventhChordsDescriptionPuzzle_State : State
 {
     protected override void PrepareState(System.Action callback)
     {
-        inversion = Random.Range(1, 3) switch { 0 => Inversion.root, 1 => Inversion.first, _ => Inversion.second };
-        Triad = Random.Range(0, 4) switch { 0 => new Minor(), 1 => new Major(), 2 => new Diminished(), _ => new Augmented() };
+        inversion = (Inversion)Random.Range(0, 3);
+        Chord = Enumeration.ListAll<SeventhChordEnum>()[Random.Range(0, Enumeration.ListAll<SeventhChordEnum>().Count)];
 
         Root = Enumeration.ListAll<KeyEnum>()[Random.Range(0, Enumeration.ListAll<KeyEnum>().Count)];
 
-        Third = Triad switch
+        Third = Chord switch
         {
-            Major or Augmented => Root.GetKeyAbove(new MusicTheory.Intervals.M3()),
+            MajorSeventh or DominantSeventh => Root.GetKeyAbove(new MusicTheory.Intervals.M3()),
             _ => Root.GetKeyAbove(new MusicTheory.Intervals.mi3()),
         };
 
-        Fifth = Triad switch
+        Fifth = Chord switch
         {
-            Augmented => Root.GetKeyAbove(new MusicTheory.Intervals.A5()),
-            Diminished => Root.GetKeyAbove(new MusicTheory.Intervals.d5()),
+            DiminishedSeventh or HalfDiminishedSeventh => Root.GetKeyAbove(new MusicTheory.Intervals.d5()),
             _ => Root.GetKeyAbove(new MusicTheory.Intervals.P5()),
         };
 
-        Keyboard = new(3, (inversion switch
+        Seventh = Chord switch
         {
-            Inversion.root => Root,
-            Inversion.first => Third,
+            MajorSeventh or MinorMajorSeventh => Root.GetKeyAbove(new MusicTheory.Intervals.M7()),
+            DiminishedSeventh => Root.GetKeyAbove(new MusicTheory.Intervals.d7()),
+            _ => Root.GetKeyAbove(new MusicTheory.Intervals.mi7()),
+        };
+
+        Bass = (inversion switch
+        {
+            Inversion.First => Third,
+            Inversion.Second => Fifth,
+            _ => Seventh
+        }).GetKeyboardNoteName();
+
+        Tenor = (inversion switch
+        {
+            Inversion.First => Fifth,
+            Inversion.Second => Seventh,
+            _ => Root
+        }).GetKeyboardNoteName();
+
+        Alto = (inversion switch
+        {
+            Inversion.First => Seventh,
+            Inversion.Second => Root,
+            _ => Third
+        }).GetKeyboardNoteName();
+
+        Soprano = (inversion switch
+        {
+            Inversion.First => Root,
+            Inversion.Second => Third,
             _ => Fifth
+        }).GetKeyboardNoteName();
+
+        Tenor = Tenor < Bass ? Tenor + 12 : Tenor;
+        Alto = Alto < Bass ? Alto + 12 : Alto;
+        Soprano = Soprano < Bass ? Soprano + 12 : Soprano;
+
+        Keyboard = new(4, (inversion switch
+        {
+            Inversion.First => Third,
+            Inversion.Second => Fifth,
+            _ => Seventh
         }).GetKeyboardNoteName());
 
         DataManager.Io.TheoryPuzzleData.ResetHints();
         _ = Question;
-        Answer.GO.SetActive(false);
         _ = Desc;
         _ = Hint;
+        Answer.GO.SetActive(false);
 
         base.PrepareState(callback);
     }
 
     protected override void EngageState()
     {
-
     }
 
     protected override void DisengageState()
@@ -63,38 +102,30 @@ public class TriadInversionDescriptionPuzzle_State : State
         if (go.transform.IsChildOf(Keyboard.Parent.transform))
         {
             Keyboard.InteractWithKey(go);
-            Answer.GO.SetActive(Keyboard.SelectedKeys[1] != null && Keyboard.SelectedKeys[2] != null);
+            Answer.GO.SetActive(
+                Keyboard.SelectedKeys[1] != null &&
+                Keyboard.SelectedKeys[2] != null &&
+                Keyboard.SelectedKeys[3] != null);
         }
 
         else if (go.transform.IsChildOf(Answer.GO.transform))
         {
-            Key root = inversion switch
-            {
-                Inversion.root => Keyboard.SelectedKeys[0].KeyboardNoteName.NoteNameToKey(),
-                Inversion.second => Keyboard.SelectedKeys[1].KeyboardNoteName.NoteNameToKey(),
-                _ => Keyboard.SelectedKeys[2].KeyboardNoteName.NoteNameToKey(),
-            };
+            bool hasB = false, hasT = false, hasA = false, hasS = false;
 
-            Key third = inversion switch
+            foreach (var key in Keyboard.SelectedKeys)
             {
-                Inversion.first => Keyboard.SelectedKeys[0].KeyboardNoteName.NoteNameToKey(),
-                Inversion.root => Keyboard.SelectedKeys[1].KeyboardNoteName.NoteNameToKey(),
-                _ => Keyboard.SelectedKeys[2].KeyboardNoteName.NoteNameToKey(),
-            };
+                if (key.KeyboardNoteName == Bass) { hasB = true; }
+                else if (key.KeyboardNoteName == Tenor) { hasT = true; }
+                else if (key.KeyboardNoteName == Alto) { hasA = true; }
+                else if (key.KeyboardNoteName == Soprano) { hasS = true; }
+            }
 
-            Key fifth = inversion switch
-            {
-                Inversion.second => Keyboard.SelectedKeys[0].KeyboardNoteName.NoteNameToKey(),
-                Inversion.first => Keyboard.SelectedKeys[1].KeyboardNoteName.NoteNameToKey(),
-                _ => Keyboard.SelectedKeys[2].KeyboardNoteName.NoteNameToKey(),
-            };
-
-            if ((root.Id == Root.Id || third.Id == Root.Id || fifth.Id == Root.Id) &&
-                (root.Id == Third.Id || third.Id == Third.Id || fifth.Id == Third.Id) &&
-                (root.Id == Fifth.Id || fifth.Id == Fifth.Id || third.Id == Fifth.Id))
+            if (hasB && hasT && hasA && hasS)
             {
                 DataManager.Io.TheoryPuzzleData.SolvedPuzzles++;
-                SetStateDirectly(RandomPuzzleSelector.GetRandomPuzzleState());
+                //SetStateDirectly(RandomPuzzleSelector.GetRandomPuzzleState());
+
+                SetStateDirectly(new InvertedSeventhChordsDescriptionPuzzle_State());
             }
             else
             {
@@ -118,13 +149,18 @@ public class TriadInversionDescriptionPuzzle_State : State
         Hint.SetTextString(DataManager.Io.TheoryPuzzleData.GetHintsRemaining);
     }
 
-    enum Inversion { root, first, second }
+    enum Inversion { First, Second, Third }
     Inversion inversion;
     Keyboard Keyboard;
-    Triad Triad;
+    SeventhChord Chord;
     Key Root;
     Key Third;
     Key Fifth;
+    Key Seventh;
+    KeyboardNoteName Bass;
+    KeyboardNoteName Tenor;
+    KeyboardNoteName Alto;
+    KeyboardNoteName Soprano;
 
     private Card _answer;
     public Card Answer => _answer ??= new Card(nameof(Answer), null)
@@ -143,7 +179,7 @@ public class TriadInversionDescriptionPuzzle_State : State
 
     private Card _question;
     public Card Question => _question ??= new Card(nameof(Question), null)
-        .SetTextString(Triad.Description + " " + nameof(Triad) + " " + InversionDescription())
+        .SetTextString(Chord.Description.SpaceAfterCap() + " " + nameof(Chord) + " " + InversionDescription())
         .SetTMPPosition(new Vector2(0, Cam.UIOrthoY - 1))
         .SetFontScale(.7f, .7f)
         .SetTextAlignment(TMPro.TextAlignmentOptions.Center)
@@ -158,7 +194,7 @@ public class TriadInversionDescriptionPuzzle_State : State
 
     private Card _desc;
     public Card Desc => _desc ??= new Card(nameof(Desc), null)
-        .SetTextString("Build the <b><i>inverted triad")
+        .SetTextString("Build the <b><i>triad")
         .SetTMPPosition(new Vector2(-Cam.UIOrthoX + 1.25f, Cam.UIOrthoY))
         .SetFontScale(.5f, .5f)
         .AutoSizeFont(true)
@@ -180,9 +216,8 @@ public class TriadInversionDescriptionPuzzle_State : State
 
     string InversionDescription() => inversion switch
     {
-        Inversion.root => "in root position",
-        Inversion.first => "in first inversion",
-        _ => "in second inversion"
+        Inversion.First => "in first inversion",
+        Inversion.Second => "in second inversion",
+        _ => "in third inversion"
     };
-
 }

@@ -8,9 +8,12 @@ public static class InputKey
 
     public static event Action<GamePadButton> ButtonEvent;
     public static event Action<GamePadButton, Vector2> StickEvent;
-    public static event Action<float> RStickAltXEvent;
-    public static event Action<float> RStickAltYEvent;
+    //public static event Action<GamePadButton, Vector2> RStickAltEvent;
     public static event Func<MouseAction, Vector3, Click> MouseClickEvent;
+
+
+    //public static event Action<float> RStickAltXEvent;
+    //public static event Action<float> RStickAltYEvent;
 
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void AutoInit()
@@ -64,21 +67,69 @@ public static class InputKey
         InputActions.Map.RStick.canceled += _ => StickEvent?.Invoke(GamePadButton.RStick, Vector2.zero);
 
         //Nintendo Switch RSticks are weird, and the Y is inverted (up is negative, so inverting the sign with minus read value).
-        InputActions.Map.RStickAltX.performed += _ => RStickAltXEvent?.Invoke(_.ReadValue<float>());
-        InputActions.Map.RStickAltX.canceled += _ => RStickAltXEvent?.Invoke(0);
-        InputActions.Map.RStickAltY.performed += _ => RStickAltYEvent?.Invoke(-_.ReadValue<float>());
-        InputActions.Map.RStickAltY.canceled += _ => RStickAltYEvent?.Invoke(0);
+        InputActions.Map.RStickAltX.performed += _ => RAltXInput(_.ReadValue<float>());
+        InputActions.Map.RStickAltX.canceled += _ => RAltXInput(0);
+        InputActions.Map.RStickAltY.performed += _ => RAltYInput(-_.ReadValue<float>());
+        InputActions.Map.RStickAltY.canceled += _ => RAltYInput(0);
 
         MonoHelper.OnUpdate += CheckForMouseClick;
+        MonoHelper.OnUpdate += RStickAltReadLoop;
         StickEvent += DebugStick;
         InputActions.Map.Enable();
     }
+
     static void DebugStick(GamePadButton gpi, Vector2 v3) { Debug.Log(gpi + " " + v3); }
+
     static void CheckForMouseClick()
     {
         if (Input.GetMouseButtonDown(0)) { MouseClickEvent?.Invoke(MouseAction.LDown, Input.mousePosition); }
         else if (Input.GetMouseButtonUp(0)) { MouseClickEvent?.Invoke(MouseAction.LUp, Input.mousePosition); }
         else if (Input.GetMouseButton(0)) { MouseClickEvent?.Invoke(MouseAction.LHold, Input.mousePosition); }
+    }
+
+    ///nintendo switch R sticks are weird
+    private static bool NewRStickAltThisFrame;
+
+    private static Vector2 RStickAlt => new(RStickAltX, RStickAltY);
+    private static float _rStickAltX;
+
+    private static float RStickAltX
+    {
+        get => _rStickAltX;
+        set
+        {
+            NewRStickAltThisFrame = true;
+            _rStickAltX = value;
+        }
+    }
+
+    private static float _rStickAltY;
+
+    private static float RStickAltY
+    {
+        get => _rStickAltY;
+        set
+        {
+            NewRStickAltThisFrame = true;
+            _rStickAltY = value;
+        }
+    }
+
+    private static void RAltXInput(float f)
+    {
+        RStickAltX = f;
+    }
+
+    private static void RAltYInput(float f)
+    {
+        RStickAltY = f;
+    }
+
+    private static void RStickAltReadLoop()
+    {
+        if (!NewRStickAltThisFrame) return;
+        StickEvent?.Invoke(GamePadButton.RStick, RStickAlt);
+        NewRStickAltThisFrame = false;
     }
 
 }

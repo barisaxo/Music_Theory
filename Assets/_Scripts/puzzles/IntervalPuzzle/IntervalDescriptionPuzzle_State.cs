@@ -12,7 +12,7 @@ public class IntervalDescriptionPuzzle_State : State
         Bottom = Enumeration.ListAll<KeyEnum>()[Random.Range(0, Enumeration.ListAll<KeyEnum>().Count)];
         Top = Enumeration.ListAll<KeyEnum>()[Random.Range(0, Enumeration.ListAll<KeyEnum>().Count)];
 
-        Keyboard = new(2, Bottom.GetKeyboardNote());
+        Keyboard = new(2, Bottom.GetKeyboardNoteName());
 
         Interval = Bottom.GetInterval(Top);
 

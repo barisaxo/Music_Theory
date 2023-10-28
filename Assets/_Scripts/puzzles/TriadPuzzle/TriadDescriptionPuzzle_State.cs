@@ -18,7 +18,7 @@ public class TriadDescriptionPuzzle_State : State
         };
 
         Root = Enumeration.ListAll<KeyEnum>()[Random.Range(0, Enumeration.ListAll<KeyEnum>().Count)];
-        Keyboard = new(3, Root.GetKeyboardNote());
+        Keyboard = new(3, Root.GetKeyboardNoteName());
 
         Third = Triad switch
         {

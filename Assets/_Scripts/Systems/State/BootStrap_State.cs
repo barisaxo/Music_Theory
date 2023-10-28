@@ -58,9 +58,9 @@ public class BootStrap_State : State
         //    }
         //}
 
-        SetStateDirectly(new DialogStart_State(new WelcomeDialogue()));
+        //SetStateDirectly(new DialogStart_State(new WelcomeDialogue()));
 
-        //SetStateDirectly(new NoteIdentificationAuralPuzzle_State());
+        SetStateDirectly(new InvertedSeventhChordsDescriptionPuzzle_State());
         //FadeToState(new IntervalAuralPuzzle_State());
         //SetStateDirectly(new TriadAuralPuzzle_State());
         //SetStateDirectly(new IntervalDescriptionPuzzle_State());
