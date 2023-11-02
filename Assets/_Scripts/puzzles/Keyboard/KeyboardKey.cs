@@ -11,8 +11,8 @@ public class KeyboardKey
     public readonly SpriteRenderer SR;
     public readonly KeyColor KeyColor;
 
-    public static Color KeyboardBlack = new(0, 0, 0, .6f);
-    public static Color KeyboardWhite = new(1, 1, 1, .6f);
+    public static Color KeyboardBlack = new(0, 0, 0, 1.6f);
+    public static Color KeyboardWhite = new(1, 1, 1, 1.6f);
 
     public KeyboardKey(KeyboardNoteName key, KeyColor c, Vector3 loc, Transform parent)
     {

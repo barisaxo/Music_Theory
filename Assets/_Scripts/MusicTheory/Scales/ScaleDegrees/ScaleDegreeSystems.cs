@@ -57,7 +57,7 @@ namespace MusicTheory.Arithmetic
             Intervals.Quantity quantity = left.GetQuantity(right);
             int id = (right.Id + 12 - left.Id) % 12;
 
-            foreach (var interval in Enumeration.ListAll<Intervals.IntervalEnum>())
+            foreach (var interval in Enumeration.All<Intervals.IntervalEnum>())
             {
                 if (interval.Id.Equals(id) &&
                     System.MathF.Abs(interval.Quantity.Id - quantity.Id) <
@@ -108,14 +108,14 @@ namespace MusicTheory.Arithmetic
                 (Intervals.A2, Intervals.d5) => new Triads.Diminished(),
                 (Intervals.A2, Intervals.A4) => new Triads.Diminished(),
 
-                (Intervals.M2, Intervals.M3) => new Triads.Secundal(),
-                (Intervals.M2, Intervals.d4) => new Triads.Secundal(),
+                //(Intervals.M2, Intervals.M3) => new Triads.Secundal(),
+                //(Intervals.M2, Intervals.d4) => new Triads.Secundal(),
 
-                (Intervals.M3, Intervals.M6) => new Triads.Quartal(),
-                (Intervals.P4, Intervals.mi7) => new Triads.Quartal(),
-                (Intervals.P4, Intervals.M6) => new Triads.Quartal(),
-                (Intervals.mi3, Intervals.P4) => new Triads.Quartal(),
-                (Intervals.M2, Intervals.P4) => new Triads.Quartal(),
+                //(Intervals.M3, Intervals.M6) => new Triads.Quartal(),
+                //(Intervals.P4, Intervals.mi7) => new Triads.Quartal(),
+                //(Intervals.P4, Intervals.M6) => new Triads.Quartal(),
+                //(Intervals.mi3, Intervals.P4) => new Triads.Quartal(),
+                //(Intervals.M2, Intervals.P4) => new Triads.Quartal(),
                 _ => throw new System.ArgumentOutOfRangeException(root.Name + ", " + root.GetInterval(third) + ", " + third.Name + ", " + root.GetInterval(fifth) + ", " + fifth.Name)
             };
         }

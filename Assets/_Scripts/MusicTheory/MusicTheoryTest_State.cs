@@ -24,11 +24,11 @@ public class MusicTheoryTest_State : State
     {
         Debug.Log(IntervalEnum.Find((new Perfect(), new Unison())));
 
-        int numOfScaleDegrees = Enumeration.ListAll<ScaleDegreeEnum>().Count;
+        int numOfScaleDegrees = Enumeration.Length<ScaleDegreeEnum>();
 
         for (int i = 0; i < numOfScaleDegrees; i++)
         {
-            ScaleDegree degree = Enumeration.ListAll<ScaleDegreeEnum>()[i];
+            ScaleDegree degree = Enumeration.All<ScaleDegreeEnum>()[i];
             Debug.Log(degree.Enum.Quality.Name + " " + degree.Enum.Degree.Name);
             Debug.Log(degree.AsInterval());
         }
@@ -36,16 +36,16 @@ public class MusicTheoryTest_State : State
 
     private void TestAllIntervals()
     {
-        int numOfKeys = Enumeration.ListAll<KeyEnum>().Count;
-        int numOfIntervals = Enumeration.ListAll<IntervalEnum>().Count;
+        int numOfKeys = Enumeration.Length<KeyEnum>();
+        int numOfIntervals = Enumeration.Length<IntervalEnum>();
 
         for (int i = 0; i < numOfKeys; i++)
         {
-            Key key = Enumeration.ListAll<KeyEnum>()[i];
+            Key key = Enumeration.All<KeyEnum>()[i];
 
             for (int ii = 0; ii < numOfIntervals; ii++)
             {
-                Interval interval = Enumeration.ListAll<IntervalEnum>()[ii];
+                Interval interval = Enumeration.All<IntervalEnum>()[ii];
 
                 Key newKey = key.GetKeyAbove(interval);
 

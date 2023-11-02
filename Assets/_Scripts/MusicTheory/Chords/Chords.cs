@@ -13,11 +13,6 @@ namespace MusicTheory.Chords
         //}
         public Chord(ChordEnum @enum) { Enum = @enum; }
         public ChordEnum Enum;
-        string Symbol;
-        Key RootNote;
-        FamilyEnum Family;
-        // Tonality Tonality;
-        Shell Shell;
         ChordTone[] ChordTones;
         Extension[] Extensions;
         public int Id => Enum.Id;
@@ -49,7 +44,6 @@ namespace MusicTheory.Chords
         public static ChordEnum _7Sus = new(0, nameof(_7Sus));
         public static ChordEnum _9Sus = new(0, nameof(_9Sus));
         public static ChordEnum _13Sus = new(0, nameof(_13Sus));
-
 
         public static ChordEnum Minor6 = new(0, nameof(Minor6));
         public static ChordEnum Minor69 = new(0, nameof(Minor69));

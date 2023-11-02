@@ -26,20 +26,20 @@ public class DataManager
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.BeforeSceneLoad)]
     private static void TryLoadData()
     {
-        if (File.Exists(Application.persistentDataPath + fileName))
-        {
-            FileStream stream = new(Application.persistentDataPath + fileName, FileMode.Open);
-            Io._theoryPuzzle = new BinaryFormatter().Deserialize(stream) as TheoryPuzzleData;
-            stream.Close();
-            Io.TheoryPuzzleData.PuzzleDifficulty = PuzzleDifficulty.Challenge;
-        }
+        //if (File.Exists(Application.persistentDataPath + fileName))
+        //{
+        //    FileStream stream = new(Application.persistentDataPath + fileName, FileMode.Open);
+        //    Io._theoryPuzzle = new BinaryFormatter().Deserialize(stream) as TheoryPuzzleData;
+        //    stream.Close();
+        //    Io.TheoryPuzzleData.PuzzleDifficulty = PuzzleDifficulty.Challenge;
+        //}
     }
 
     public void SaveTheoryPuzzleData()
     {
-        FileStream fileStream = new(Application.persistentDataPath + fileName, FileMode.Create);
-        new BinaryFormatter().Serialize(fileStream, TheoryPuzzleData);
-        fileStream.Close();
+        //FileStream fileStream = new(Application.persistentDataPath + fileName, FileMode.Create);
+        //new BinaryFormatter().Serialize(fileStream, TheoryPuzzleData);
+        //fileStream.Close();
     }
 
     const string fileName = "save.me";

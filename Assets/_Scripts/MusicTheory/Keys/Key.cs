@@ -103,7 +103,7 @@ namespace MusicTheory.Keys
 
         public static KeyEnum Find((Letter letter, Accidental accidental) la)
         {
-            foreach (var e in ListAll<KeyEnum>())
+            foreach (var e in All<KeyEnum>())
                 if (e.Letter.Equals(la.letter) && e.Accidental.Equals(la.accidental))
                     return e;
 

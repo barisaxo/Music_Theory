@@ -68,6 +68,12 @@ public static class CardSystems
         return Card;
     }
 
+    public static Card SetTMPRectPivot(this Card Card, float x, float y)
+    {
+        Card.TMP.rectTransform.pivot = new Vector2(x, y);
+        return Card;
+    }
+
     public static Card SetTMPRectPivot(this Card Card, Vector2 piv)
     {
         Card.TMP.rectTransform.pivot = piv;

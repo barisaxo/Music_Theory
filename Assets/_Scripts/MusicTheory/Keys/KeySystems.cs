@@ -35,18 +35,18 @@ namespace MusicTheory.Arithmetic
                 (Intervals.A2, Intervals.d5) => new Triads.Diminished(),
                 (Intervals.A2, Intervals.A4) => new Triads.Diminished(),
 
-                (Intervals.M2, Intervals.M3) => new Triads.Secundal(),//d3 + d3
-                (Intervals.M2, Intervals.d4) => new Triads.Secundal(),//d3 + d3
-                (Intervals.M2, Intervals.P4) => new Triads.Secundal(),//d3 + mi3
+                //(Intervals.M2, Intervals.M3) => new Triads.Secundal(),//d3 + d3
+                //(Intervals.M2, Intervals.d4) => new Triads.Secundal(),//d3 + d3
+                //(Intervals.M2, Intervals.P4) => new Triads.Secundal(),//d3 + mi3
 
-                (Intervals.mi3, Intervals.P4) => new Triads.Quartal(),//mi3 + d3
-                (Intervals.M3, Intervals.M6) => new Triads.Quartal(),//M3 + A3
-                (Intervals.M3, Intervals.d7) => new Triads.Quartal(),//M3 + A3
-                (Intervals.d4, Intervals.M6) => new Triads.Quartal(),//M3 + M3
-                (Intervals.d4, Intervals.d7) => new Triads.Quartal(),//M3 + M3
-                (Intervals.P4, Intervals.d7) => new Triads.Quartal(),//A3 + M3
-                (Intervals.P4, Intervals.M6) => new Triads.Quartal(),//A3 + M3
-                (Intervals.P4, Intervals.mi7) => new Triads.Quartal(),//A3 + A3
+                //(Intervals.mi3, Intervals.P4) => new Triads.Quartal(),//mi3 + d3
+                //(Intervals.M3, Intervals.M6) => new Triads.Quartal(),//M3 + A3
+                //(Intervals.M3, Intervals.d7) => new Triads.Quartal(),//M3 + A3
+                //(Intervals.d4, Intervals.M6) => new Triads.Quartal(),//M3 + M3
+                //(Intervals.d4, Intervals.d7) => new Triads.Quartal(),//M3 + M3
+                //(Intervals.P4, Intervals.d7) => new Triads.Quartal(),//A3 + M3
+                //(Intervals.P4, Intervals.M6) => new Triads.Quartal(),//A3 + M3
+                //(Intervals.P4, Intervals.mi7) => new Triads.Quartal(),//A3 + A3
 
                 _ => throw new ArgumentOutOfRangeException(root.Name + ", " + root.GetInterval(third) + ", " + third.Name + ", " + root.GetInterval(fifth) + ", " + fifth.Name)
             };
@@ -55,7 +55,7 @@ namespace MusicTheory.Arithmetic
         public static Keys.Key KeepFlatOrNatural(this Keys.Key key)
         {
             if (key.Enum.Accidental is Keys.Sharp)
-                foreach (var keyEnum in Enumeration.ListAll<Keys.KeyEnum>())
+                foreach (var keyEnum in Enumeration.All<Keys.KeyEnum>())
                     if (keyEnum.Letter.Id.Equals((key.Enum.Letter.Id + 1) % 12) && key.Id == keyEnum.Id)
                         return keyEnum;
             return key;
@@ -70,7 +70,7 @@ namespace MusicTheory.Arithmetic
             Keys.Letter letter = (Keys.LetterEnum)((key.Enum.Letter.Id + interval.Quantity.Id) % 7);
             Keys.Key newKey = Enumeration.FindId<Keys.KeyEnum>(id);
 
-            foreach (var e in Enumeration.ListAll<Keys.KeyEnum>())
+            foreach (var e in Enumeration.All<Keys.KeyEnum>())
             {
                 if (e.Id.Equals(id) &&
                     MathF.Abs(e.Letter.Id - letter.Id) <=
@@ -87,7 +87,7 @@ namespace MusicTheory.Arithmetic
             Intervals.Quantity quantity = left.GetQuantity(right);
             int id = (right.Id + 12 - left.Id) % 12;
 
-            foreach (var interval in Enumeration.ListAll<Intervals.IntervalEnum>())
+            foreach (var interval in Enumeration.All<Intervals.IntervalEnum>())
             {
                 if (interval.Id.Equals(id) &&
                     MathF.Abs(interval.Quantity.Id - quantity.Id) <

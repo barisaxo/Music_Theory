@@ -13,9 +13,9 @@ namespace Menus
         protected Transform Parent => _parent != null ? _parent : _parent = new GameObject(Name).transform;
         private MenuItem<T> _selection { get; set; }
         public MenuItem<T> Selection { get => _selection; set { _selection = value; ItemDescriptionText = value.Item.Description; } }
-        public List<T> DataItems => Enumeration.ListAll<T>();
-        private List<MenuItem<T>> _menuItems;
-        public List<MenuItem<T>> MenuItems => _menuItems ??= this.SetUpMenuCards(Parent, Style);
+        public T[] DataItems => Enumeration.All<T>();
+        private MenuItem<T>[] _menuItems;
+        public MenuItem<T>[] MenuItems => _menuItems ??= this.SetUpMenuCards(Parent, Style);
         public virtual MenuLayoutStyle Style => MenuLayoutStyle.AlignRight;
         public string ItemDescriptionText { set => ItemDescription.TMP.text = value; }
         private Card _itemDescription;

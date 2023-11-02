@@ -54,26 +54,26 @@ public class DialogPrinting_State : State
         Dialog.PrintDialog(FinishedPrinting);
     }
 
-    protected override Click Clicked(MouseAction action, Vector3 _)
+    protected override void Clicked(MouseAction action, Vector3 _)
     {
-        if (action != MouseAction.LUp) return Click.Down;
+        if (action != MouseAction.LUp) return;// Click.Down;
 
         Audio.SFX.StopClip();
         if (Dialog.LetType) Dialog.LetType = false;
 
-        if (!waitingForInput) return Click.Down;
+        if (!waitingForInput) return;// Click.Down;
 
         if (Dialog.HasNextLine())
         {
             Dialog.SetNextLine();
             SetStateDirectly(new DialogPrinting_State(Dialog, SubsequentState));
-            return Click.Down;
+            return;// Click.Down;
         }
 
         if (Dialog.HasNextState())
         {
             SetStateDirectly(new EndDialog_State(Dialog, Dialog.CurrentLine.NextState, Dialog.CurrentLine.FadeOut));
-            return Click.Down;
+            return;// Click.Down;
         }
 
         if (Dialog.HasNextDialogue())
@@ -89,7 +89,7 @@ public class DialogPrinting_State : State
             SetStateDirectly(new DialogPrinting_State(Dialog, SubsequentState));
         }
 
-        return base.Clicked(action, _);
+        base.Clicked(action, _);
     }
 
     private void FinishedPrinting()

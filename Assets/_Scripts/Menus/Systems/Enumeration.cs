@@ -77,7 +77,7 @@ public abstract class Enumeration
     /// </summary>
     public static T FindExact<T>(T t) where T : Enumeration, new()
     {
-        foreach (var e in ListAll<T>()) if (e.Equals(t)) return e;
+        foreach (var e in All<T>()) if (e.Equals(t)) return e;
         throw new ArgumentOutOfRangeException(t.ToString());
     }
 
@@ -86,7 +86,7 @@ public abstract class Enumeration
     /// </summary>
     public static T FindId<T>(int i) where T : Enumeration, new()
     {
-        foreach (var e in ListAll<T>()) if (e.Id == i) return e;
+        foreach (var e in All<T>()) if (e.Id == i) return e;
         throw new ArgumentOutOfRangeException(i.ToString());
     }
 
@@ -95,7 +95,7 @@ public abstract class Enumeration
     /// </summary>
     public static T FindName<T>(string s) where T : Enumeration, new()
     {
-        foreach (var e in ListAll<T>()) if (e.Name == s) return e;
+        foreach (var e in All<T>()) if (e.Name == s) return e;
         throw new ArgumentOutOfRangeException(s);
     }
 
@@ -104,14 +104,14 @@ public abstract class Enumeration
     /// </summary>
     public static T FindMatch<T>(int i, string s) where T : Enumeration, new()
     {
-        foreach (var e in ListAll<T>()) if (e.Id == i && e.Name == s) return e;
+        foreach (var e in All<T>()) if (e.Id == i && e.Name == s) return e;
         throw new ArgumentOutOfRangeException(i.ToString());
     }
 
     /// <summary>
     /// Get all enums, in order of declaration (not sorted).
     /// </summary>
-    public static List<T> ListAll<T>() where T : Enumeration, new() => GetAll<T>().ToList();
+    public static T[] All<T>() where T : Enumeration, new() => GetAll<T>().ToArray();
 
     private static IEnumerable<T> GetAll<T>() where T : Enumeration, new()
     {
@@ -127,4 +127,6 @@ public abstract class Enumeration
             }
         }
     }
+
+    public static int Length<T>() where T : Enumeration, new() => GetAll<T>().Count();
 }

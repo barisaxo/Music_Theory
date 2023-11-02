@@ -76,11 +76,11 @@ public class InputTest_State : State
         TestCard.SetSpritePosition(v2);
     }
 
-    protected override Click Clicked(MouseAction action, Vector3 mousePos)
+    protected override void Clicked(MouseAction action, Vector3 mousePos)
     {
-        if (action != MouseAction.LUp) return Click.Down;
-        var click = base.Clicked(action, mousePos);
-        if (click != Click.Up) return click;
+        if (action != MouseAction.LUp) return;// Click.Down;
+        //var click = base.Clicked(action, mousePos);
+        //if (click != Click.Up) return click;
 
         if (Random.value > .5f)
         {
@@ -92,7 +92,7 @@ public class InputTest_State : State
             FadeToState(new InputTest_State());
         }
 
-        return click;
+        //return click;
     }
 
     protected override void ClickedOn(GameObject go)

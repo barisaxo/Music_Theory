@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections.Generic;
 using TMPro;
 
 namespace Menus
@@ -39,7 +38,7 @@ namespace Menus
             MenuItem<T> PrevItem() => menu.Style switch
             {
                 MenuLayoutStyle.TwoColumns => (
-                    menu.Selection == Mathf.CeilToInt((menu.MenuItems.Count - .5f) * .5f) ||
+                    menu.Selection == Mathf.CeilToInt((menu.MenuItems.Length - .5f) * .5f) ||
                     menu.Selection <= 0) ?
                         menu.Selection : menu.MenuItems[menu.Selection - 1],
 
@@ -49,23 +48,23 @@ namespace Menus
             MenuItem<T> NextItem() => menu.Style switch
             {
                 MenuLayoutStyle.TwoColumns => (
-                 menu.Selection == Mathf.FloorToInt((menu.MenuItems.Count - .5f) * .5f) ||
+                 menu.Selection == Mathf.FloorToInt((menu.MenuItems.Length - .5f) * .5f) ||
                  menu.Selection == menu.MenuItems[^1]) ?
                     menu.Selection : menu.MenuItems[menu.Selection + 1],
 
                 _ => menu.Selection == menu.MenuItems[^1] ? menu.Selection : menu.MenuItems[menu.Selection + 1]
             };
 
-            MenuItem<T> ScrollRight() => menu.Selection + Mathf.CeilToInt((menu.MenuItems.Count - .5f) * .5f) < menu.MenuItems.Count ?
-                menu.MenuItems[menu.Selection + Mathf.CeilToInt((menu.MenuItems.Count - .5f) * .5f)] : menu.Selection;
+            MenuItem<T> ScrollRight() => menu.Selection + Mathf.CeilToInt((menu.MenuItems.Length - .5f) * .5f) < menu.MenuItems.Length ?
+                menu.MenuItems[menu.Selection + Mathf.CeilToInt((menu.MenuItems.Length - .5f) * .5f)] : menu.Selection;
 
-            MenuItem<T> ScrollLeft() => menu.Selection - Mathf.CeilToInt((menu.MenuItems.Count - .5f) * .5f) >= 0 ?
-                menu.MenuItems[menu.Selection - Mathf.CeilToInt((menu.MenuItems.Count - .5f) * .5f)] : menu.Selection;
+            MenuItem<T> ScrollLeft() => menu.Selection - Mathf.CeilToInt((menu.MenuItems.Length - .5f) * .5f) >= 0 ?
+                menu.MenuItems[menu.Selection - Mathf.CeilToInt((menu.MenuItems.Length - .5f) * .5f)] : menu.Selection;
         }
 
         public static void UpdateTextColors<T>(this IMenu<T> menu) where T : DataEnum, new()
         {
-            for (int i = 0; i < menu.MenuItems.Count; i++)
+            for (int i = 0; i < menu.MenuItems.Length; i++)
             {
                 if (menu.MenuItems[i].Card.GO.activeInHierarchy)
                 {
@@ -74,12 +73,12 @@ namespace Menus
             }
         }
 
-        public static List<MenuItem<T>> SetUpMenuCards<T>(this IMenu<T> menu, Transform parent, MenuLayoutStyle style) where T : DataEnum, new()
+        public static MenuItem<T>[] SetUpMenuCards<T>(this IMenu<T> menu, Transform parent, MenuLayoutStyle style) where T : DataEnum, new()
         {
-            List<MenuItem<T>> items = new();
-            for (int i = 0; i < menu.DataItems.Count; i++)
+            MenuItem<T>[] items = new MenuItem<T>[menu.DataItems.Length];
+            for (int i = 0; i < menu.DataItems.Length; i++)
             {
-                items.Add(new()
+                items[i] = new()
                 {
                     Item = menu.DataItems[i],
                     Card = new Card(menu.DataItems[i].Name, parent)
@@ -103,7 +102,7 @@ namespace Menus
                        })
                        .SetFontScale(.6f, .6f)
                        .TMPClickable()
-                }); ;
+                };
             }
 
             return items;
@@ -117,10 +116,10 @@ namespace Menus
                        new Vector2(-Cam.UIOrthoX + 2.5f, 1.8f - (i * .8f)),
 
                 MenuLayoutStyle.TwoColumns =>
-                new Vector2(i < menu.DataItems.Count * .5f ? -Cam.UIOrthoX + 2.5f : 2,
-                -1.8f - (i % Mathf.CeilToInt(menu.DataItems.Count * .5f) * .8f) + (menu.DataItems.Count * .5f)),
+                new Vector2(i < menu.DataItems.Length * .5f ? -Cam.UIOrthoX + 2.5f : 2,
+                -1.8f - (i % Mathf.CeilToInt(menu.DataItems.Length * .5f) * .8f) + (menu.DataItems.Length * .5f)),
 
-                MenuLayoutStyle.Header => new Vector2(2 - Cam.UIOrthoX + (2 * (Cam.UIOrthoX - 2) / (menu.DataItems.Count - 1) * i),
+                MenuLayoutStyle.Header => new Vector2(2 - Cam.UIOrthoX + (2 * (Cam.UIOrthoX - 2) / (menu.DataItems.Length - 1) * i),
                 Cam.UIOrthoY - 1),
 
                 _ => Vector2.zero,
@@ -134,9 +133,3 @@ namespace Menus
 
     public enum MenuLayoutStyle { AlignRight, TwoColumns, AlignLeft, Header }
 }
-
-//public static class ListHelper
-//{
-//    public static object Last<T>(this List<T> values) => values[^1];
-
-//}

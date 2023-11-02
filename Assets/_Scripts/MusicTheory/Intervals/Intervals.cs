@@ -124,7 +124,7 @@ namespace MusicTheory.Intervals
 
         public static IntervalEnum Find((Quality quality, Quantity quantity) i)
         {
-            foreach (var e in ListAll<IntervalEnum>()) if (e.Quantity.Equals(i.quantity) && e.Quality.Equals(i.quality)) return e;
+            foreach (var e in All<IntervalEnum>()) if (e.Quantity.Equals(i.quantity) && e.Quality.Equals(i.quality)) return e;
             throw new ArgumentOutOfRangeException(i.quality.Name + " " + i.quantity.Name);
         }
 

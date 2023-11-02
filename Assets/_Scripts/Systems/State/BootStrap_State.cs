@@ -1,12 +1,8 @@
 using System;
-using System.Collections;
 using UnityEngine;
-using Audio;
 
 public class BootStrap_State : State
 {
-    private BootStrap_State() { }
-
     [RuntimeInitializeOnLoadMethod(RuntimeInitializeLoadType.AfterSceneLoad)]
     private static void Initialize()
     {
@@ -17,11 +13,9 @@ public class BootStrap_State : State
     protected override void PrepareState(Action callback)
     {
         _ = Cam.Io;
-        _ = AudioManager.Io.AudioParser;
+        _ = Audio.AudioParser;
         callback();
     }
-
-
 
     protected override void EngageState()
     {
@@ -41,34 +35,12 @@ public class BootStrap_State : State
             return;
         }
 
-        //PlayNotes().StartCoroutine();
+        Data.TheoryPuzzleData.PuzzleDifficulty = PuzzleDifficulty.Free;
+        FadeToState(PuzzleSelector.WeightedRandomPuzzleState(Data.TheoryPuzzleData));
 
-        //IEnumerator PlayNotes()
-        //{
-        //    float timer = 0f;
-        //    int note = 0;
-        //    for (; ; )
-        //    {
-        //        if ((timer += Time.deltaTime) > 5f)
-        //        {
-        //            AudioManager.Io.KBAudio.PlayNote(AudioManager.Io.AudioParser.GetAudioClipFromKey((KeyboardNoteName)note++));
-        //            timer -= 5f;
-        //        }
-        //        yield return null;
-        //    }
-        //}
-
-        //SetStateDirectly(new DialogStart_State(new WelcomeDialogue()));
-
-        SetStateDirectly(new InvertedSeventhChordsDescriptionPuzzle_State());
-        //FadeToState(new IntervalAuralPuzzle_State());
-        //SetStateDirectly(new TriadAuralPuzzle_State());
-        //SetStateDirectly(new IntervalDescriptionPuzzle_State());
-
-        //SetStateDirectly(new KeyboardTest_State());
-        //SetStateDirectly(new TheoryPuzzleState());
-        //SetStateDirectly(new MusicTheoryTest_State());
     }
+
+    PuzzleType RandPuzzleType => UnityEngine.Random.value > .5f ? PuzzleType.Theory : PuzzleType.Aural;
 
     Card _reload;
     Card Reload => _reload ??= new Card(nameof(Reload), null)

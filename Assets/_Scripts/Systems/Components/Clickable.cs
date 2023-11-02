@@ -57,12 +57,12 @@ internal sealed class ClickFeedback
         }
     }
 
-    private Click Clicked(MouseAction action, Vector3 mousePos)
+    private void Clicked(MouseAction action, Vector3 mousePos)
     {
         if (action == MouseAction.LUp)
         {
             ClickedGO = null;
-            return Click.Up;
+            return;// Click.Up;
         }
 
         RaycastHit2D hitUI = Physics2D.Raycast(mousePos, Vector2.zero);
@@ -86,7 +86,7 @@ internal sealed class ClickFeedback
             ClickedGO = null;
         }
 
-        return Click.Down;
+        return;// Click.Down;
     }
 
     private void AlterColor()

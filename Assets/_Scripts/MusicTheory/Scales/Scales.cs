@@ -23,7 +23,7 @@ namespace MusicTheory.Scales
         public string Description => Enum.Description;
         public string Name => Enum.Name;
         public int Id => Enum.Id;
-        public static Scale operator ++(Scale a) => (Scale)((a.Id + 1) % Enumeration.ListAll<ScaleEnum>().Count);
+        public static Scale operator ++(Scale a) => (Scale)((a.Id + 1) % Enumeration.Length<ScaleEnum>());
         public static explicit operator Scale(int i) => Enumeration.FindId<ScaleEnum>(i);
     }
 
@@ -102,7 +102,7 @@ namespace MusicTheory.Scales
     public class Pentatonic : Scale
     {
         public Pentatonic() : base(
-            @enum: ScaleEnum.PentaTonic,
+            @enum: ScaleEnum.Pentatonic,
             modes: new Mode[] { new PentatonicMajor(), new PentatonicII(), new PentatonicIII(), new PentatonicIV(), new PentatonicMinor() },
             steps: new Step[] { new Whole(), new Whole(), new Augmented(), new Whole(), new Augmented() },
             degrees: new ScaleDegree[] { new _1(), new _2(), new _3(), new P5(), new _6() })
@@ -116,6 +116,7 @@ namespace MusicTheory.Scales
         public ScaleEnum() : base(0, "") { }
         public ScaleEnum(int id, string name, string desc) : base(id, name) { Description = desc; }
         public readonly string Description;
+        //public static int Count => ListAll<ScaleEnum>().Count;
 
         public static ScaleEnum Major = new(0, "∆", nameof(Major));
         public static ScaleEnum JazzMinor = new(1, "∆-", nameof(JazzMinor));
@@ -124,7 +125,7 @@ namespace MusicTheory.Scales
         public static ScaleEnum Diminished = new(4, "º", nameof(Diminished));
         public static ScaleEnum Diminished6th = new(5, "º6", nameof(Diminished6th));
         public static ScaleEnum Chromatic = new(6, "∞", nameof(Chromatic));
-        public static ScaleEnum PentaTonic = new(7, "∑", nameof(PentaTonic));
+        public static ScaleEnum Pentatonic = new(7, "ε", nameof(Pentatonic));
 
         public static implicit operator Scale(ScaleEnum s) => s switch
         {
@@ -135,7 +136,7 @@ namespace MusicTheory.Scales
             _ when s == WholeTone => new WholeTone(),
             _ when s == Diminished6th => new Diminished6th(),
             _ when s == Chromatic => new Chromatic(),
-            _ when s == PentaTonic => new Pentatonic(),
+            _ when s == Pentatonic => new Pentatonic(),
             _ => throw new ArgumentOutOfRangeException()
         };
     }

@@ -1,6 +1,9 @@
 ﻿using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
+using System.Collections.Generic;
+using System.Collections;
+using System;
 
 public class Card
 {
@@ -32,7 +35,7 @@ public class Card
     public void SelfDestruct()
     {
         if (Children != null) { foreach (Card child in Children) child.SelfDestruct(); }
-        if (GO != null) Object.Destroy(GO);
+        if (GO != null) UnityEngine.Object.Destroy(GO);
     }
 
     public string Name { get; private set; }
@@ -40,7 +43,6 @@ public class Card
     public Card[] Children { get; private set; } = null;
     public GameObject GO { get; private set; } = null;
     public Clickable Clickable { get; private set; } = null;
-
     private Transform Parent;
 
     public string TextString { get => TMP.text; set => TMP.text = value; }
@@ -153,6 +155,32 @@ public class Card
     }
 
     public Card SetClickable(Clickable clickable) { Clickable = clickable; return this; }
+
+
+    private List<Action> _builderSteps = null;
+    public List<Action> BuilderSteps
+    {
+        get
+        {
+            if (_builderSteps == null)
+            {
+                _builderSteps = new();
+
+                WaitAStep().StartCoroutine();
+
+                IEnumerator WaitAStep()
+                {
+                    yield return null;
+
+                    foreach (Action ac in _builderSteps) ac?.Invoke();
+
+                    _builderSteps = null;
+                }
+            }
+            return _builderSteps;
+        }
+
+    }
 }
 
 

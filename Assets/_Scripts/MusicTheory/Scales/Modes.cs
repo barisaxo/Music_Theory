@@ -39,11 +39,11 @@ namespace MusicTheory.Modes
     public class Diminished : Mode { public Diminished() : base(ScaleEnum.Diminished, ModeDegreeEnum.Prime, nameof(Diminished)) { } }
     public class Octatonic : Mode { public Octatonic() : base(ScaleEnum.Diminished, ModeDegreeEnum.Second, nameof(Octatonic)) { } }
 
-    public class PentatonicMajor : Mode { public PentatonicMajor() : base(ScaleEnum.PentaTonic, ModeDegreeEnum.Prime, nameof(PentatonicMajor)) { } }
-    public class PentatonicII : Mode { public PentatonicII() : base(ScaleEnum.PentaTonic, ModeDegreeEnum.Seventh, nameof(PentatonicII)) { } }
-    public class PentatonicIII : Mode { public PentatonicIII() : base(ScaleEnum.PentaTonic, ModeDegreeEnum.Third, nameof(PentatonicIII)) { } }
-    public class PentatonicIV : Mode { public PentatonicIV() : base(ScaleEnum.PentaTonic, ModeDegreeEnum.Fourth, nameof(PentatonicIV)) { } }
-    public class PentatonicMinor : Mode { public PentatonicMinor() : base(ScaleEnum.PentaTonic, ModeDegreeEnum.Fifth, nameof(PentatonicMinor)) { } }
+    public class PentatonicMajor : Mode { public PentatonicMajor() : base(ScaleEnum.Pentatonic, ModeDegreeEnum.Prime, nameof(PentatonicMajor)) { } }
+    public class PentatonicII : Mode { public PentatonicII() : base(ScaleEnum.Pentatonic, ModeDegreeEnum.Second, nameof(PentatonicII)) { } }
+    public class PentatonicIII : Mode { public PentatonicIII() : base(ScaleEnum.Pentatonic, ModeDegreeEnum.Third, nameof(PentatonicIII)) { } }
+    public class PentatonicIV : Mode { public PentatonicIV() : base(ScaleEnum.Pentatonic, ModeDegreeEnum.Fourth, nameof(PentatonicIV)) { } }
+    public class PentatonicMinor : Mode { public PentatonicMinor() : base(ScaleEnum.Pentatonic, ModeDegreeEnum.Fifth, nameof(PentatonicMinor)) { } }
 
     public class Diminished6thI : Mode { public Diminished6thI() : base(ScaleEnum.Diminished6th, ModeDegreeEnum.Prime, nameof(Diminished6thI)) { } }
     public class Diminished6thII : Mode { public Diminished6thII() : base(ScaleEnum.Diminished6th, ModeDegreeEnum.Second, nameof(Diminished6thII)) { } }
@@ -56,6 +56,7 @@ namespace MusicTheory.Modes
     {
         public ModeDegreeEnum() : base(0, "") { }
         public ModeDegreeEnum(int id, string name) : base(id, name) { }
+        //public static int Count => ListAll<ModeDegreeEnum>().Count;
 
         public static ModeDegreeEnum Prime = new(0, nameof(Prime));
         public static ModeDegreeEnum Second = new(1, nameof(Second));

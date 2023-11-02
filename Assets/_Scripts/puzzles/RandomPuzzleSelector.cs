@@ -2,24 +2,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public static class RandomPuzzleSelector
+public static class PuzzleSelector
 {
 
-    public static State GetRandomPuzzleState() => Random.Range(0, 8) switch
+    public static State WeightedRandomPuzzleState(this TheoryPuzzleData data) => Random.Range(0, 35) switch
     {
-        0 => new NoteIdentificationAuralPuzzle_State(),
-        1 => new NoteIdentificationDescriptionPuzzle_State(),
-        2 => new IntervalAuralPuzzle_State(),
-        3 => new IntervalDescriptionPuzzle_State(),
-        4 => new TriadAuralPuzzle_State(),
-        5 => new TriadDescriptionPuzzle_State(),
-        6 => new TriadInversionAuralPuzzle_State(),
-        7 => new TriadInversionDescriptionPuzzle_State(),
-        //8 => new KeyboardTest_State(),
+        < 4 => new Puzzle_State<KeyboardNoteName>(new NotePuzzle(), RandPuzzleType),
+        < 7 => new Puzzle_State<MusicTheory.Steps.Step>(new StepsPuzzle(), RandPuzzleType),
+        < 10 => new Puzzle_State<MusicTheory.Triads.Triad>(new TriadPuzzle(), RandPuzzleType),
+        < 15 => new Puzzle_State<MusicTheory.Triads.Triad>(new InvertedTriadPuzzle(), RandPuzzleType),
+        < 20 => new Puzzle_State<MusicTheory.Scales.Scale>(new ScalePuzzle(), RandPuzzleType),
+        < 25 => new Puzzle_State<MusicTheory.Scales.Scale>(new ModePuzzle(), RandPuzzleType),
+        < 30 => new Puzzle_State<MusicTheory.SeventhChords.SeventhChord>(new SeventhChordPuzzle(), RandPuzzleType),
+        _ => new Puzzle_State<MusicTheory.SeventhChords.SeventhChord>(new InvertedSeventhChordPuzzle(), RandPuzzleType),
     };
 
-
-
+    static PuzzleType RandPuzzleType => Random.value > .5f ? PuzzleType.Theory : PuzzleType.Aural;
 
 
 }

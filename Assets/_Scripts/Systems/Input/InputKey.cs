@@ -9,7 +9,7 @@ public static class InputKey
     public static event Action<GamePadButton> ButtonEvent;
     public static event Action<GamePadButton, Vector2> StickEvent;
     //public static event Action<GamePadButton, Vector2> RStickAltEvent;
-    public static event Func<MouseAction, Vector3, Click> MouseClickEvent;
+    public static event Action<MouseAction, Vector3> MouseClickEvent;
 
 
     //public static event Action<float> RStickAltXEvent;

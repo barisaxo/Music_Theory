@@ -5,11 +5,11 @@ using System;
 
 public class Keyboard
 {
-    public Keyboard(int numOfKeys, KeyboardNoteName bottom)
+    public Keyboard(int numOfNotes, KeyboardNoteName bottomNote)
     {
         TwoOctaveKeyboard();
-        SelectedKeys = new KeyboardKey[numOfKeys];
-        SelectedKeys[0] = Keys[(int)bottom];
+        SelectedKeys = new KeyboardKey[numOfNotes];
+        SelectedKeys[0] = Keys[(int)bottomNote];
         LockBottomKey = true;
         SetKeyColors();
     }
@@ -37,26 +37,26 @@ public class Keyboard
     public List<KeyboardKey> Keys = new List<KeyboardKey>();
 
     public Color KeyboardBlack = new Color(0, 0, 0, .6f);
-    public Color KeyboardWhite = new Color(.6f, .6f, .6f, .3f);
-    public Color KeyboardWhiteHL = new Color(.75f, .75f, .15f, .35f);
-    public Color KeyboardBlackHL = new Color(.65f, .65f, .1f, .35f);
-    public Color KeyboardWhiteAHL = new Color(.25f, .25f, .65f, .35f);
-    public Color KeyboardBlackAHL = new Color(.15f, .15f, .55f, .35f);
-    public Color KeyboardWhiteAHL2 = new Color(.65f, .15f, .1f, .35f);
-    public Color KeyboardBlackAHL2 = new Color(.55f, .15f, .15f, .35f);
+    public Color KeyboardWhite = new Color(.6f, .6f, .6f, .6f);
+    public Color KeyboardWhiteHL = new Color(.75f, .75f, .15f, .55f);
+    public Color KeyboardBlackHL = new Color(.65f, .65f, .1f, .55f);
+    public Color KeyboardWhiteAHL = new Color(.25f, .25f, .65f, .65f);
+    public Color KeyboardBlackAHL = new Color(.15f, .15f, .55f, .65f);
+    public Color KeyboardWhiteAHL2 = new Color(.65f, .15f, .1f, .55f);
+    public Color KeyboardBlackAHL2 = new Color(.55f, .15f, .15f, .55f);
 
     public bool LockBottomKey;
     public KeyboardKey[] SelectedKeys;
 
     public virtual void InteractWithKey(GameObject go)
     {
-        foreach (KeyboardKey k in Keys)
+        foreach (KeyboardKey key in Keys)
         {
-            if (k.Go == go)
+            if (key.Go == go)
             {
-                Debug.Log(go);
-                if (LockBottomKey) LockedBottomKey(k);
-                else UnlockedBottomKey(k);
+                Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
+                if (LockBottomKey) LockedBottomKey(key);
+                else UnlockedBottomKey(key);
                 return;
             }
         }
@@ -69,8 +69,8 @@ public class Keyboard
         {
             SelectedKeys[0] = SelectedKeys[0] == key ? null : key;
 
-            if (key != null)
-                Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
+            ////if (key != null)
+            //Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
 
             SetKeyColors();
             return;
@@ -91,7 +91,7 @@ public class Keyboard
             if (SelectedKeys[i] == null)
             {
                 SelectedKeys[i] = key;
-                Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
+                //Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
                 SetKeyColors();
                 return;
             }
@@ -102,13 +102,13 @@ public class Keyboard
     {
         if (SelectedKeys.Length <= 1)
         {
-            Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
+            //Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
             return;
         }
 
         if (key.KeyboardNoteName <= SelectedKeys[0].KeyboardNoteName)
         {
-            Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
+            //Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
             Debug.Log("you cannot select notes below the bottom note");//todo make this live feedback
             return;
         }
@@ -117,9 +117,9 @@ public class Keyboard
         {
             SelectedKeys[1] = SelectedKeys[1] == key ? null : key;
 
-            if (SelectedKeys[1] != null)
-                Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
-            else Audio.AudioManager.Io.KBAudio.Stop();
+            //if (SelectedKeys[1] != null)
+            //Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
+            //else Audio.AudioManager.Io.KBAudio.Stop();
 
             SetKeyColors();
             return;
@@ -130,7 +130,8 @@ public class Keyboard
             if (SelectedKeys[i] == key)
             {
                 SelectedKeys[i] = null;
-                Audio.AudioManager.Io.KBAudio.Stop();
+                //Audio.AudioManager.Io.KBAudio.Stop();
+                //Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
                 SetKeyColors();
                 return;
             }
@@ -141,7 +142,7 @@ public class Keyboard
             if (SelectedKeys[i] == null)
             {
                 SelectedKeys[i] = key;
-                Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
+                //Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
                 SetKeyColors();
                 return;
             }

@@ -21,6 +21,6 @@ public class NewPuzzleSetup_State : State
 
     protected override void EngageState()
     {
-        SetStateDirectly(RandomPuzzleSelector.GetRandomPuzzleState());
+        SetStateDirectly(PuzzleSelector.WeightedRandomPuzzleState(Data.TheoryPuzzleData));
     }
 }

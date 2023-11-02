@@ -38,7 +38,7 @@ public abstract class State
     /// <summary>
     ///     Called by SetStateDirectly() and FadeOutToBlack(). Don't set new states here.
     /// </summary>
-    protected virtual void PrepareState(Action callback) { callback(); }
+    protected virtual void PrepareState(Action callback) { callback?.Invoke(); }
 
     /// <summary>
     ///     Called by SetSceneDirectly() and FadeInToScene().
@@ -47,12 +47,15 @@ public abstract class State
     {
         InputKey.ButtonEvent += GPInput;
         InputKey.StickEvent += GPStickInput;
-        //InputKey.RStickAltEvent += RStick;
-        //InputKey.RStickAltYEvent += RAltYInput;
         InputKey.MouseClickEvent += Clicked;
-        //MonoHelper.OnUpdate += RStickAltReadLoop;
         MonoHelper.OnUpdate += UpdateStickInput;
     }
+
+    /// <summary>
+    /// Called by FadeToState after Prepare, then waits two steps before Engage.
+    /// Useful for TMP actions that need to wait a step but you still want to disable.
+    /// </summary>
+    protected virtual void PreEngageState(Action callback) { callback?.Invoke(); }
 
     /// <summary>
     ///     Called by SetStateDirectly() and FadeInToScene(). OK to set new states here.
@@ -96,9 +99,14 @@ public abstract class State
             }
 
             fader.Screen.color = Color.black;
+            newState.PrepareState(WaitTwoSteps().StartCoroutine);
+        }
 
+        IEnumerator WaitTwoSteps()
+        {
             yield return null;
-            newState.PrepareState(FadeInToScene().StartCoroutine);
+            yield return null;
+            newState.PreEngageState(FadeInToScene().StartCoroutine);
         }
 
         IEnumerator FadeInToScene()
@@ -138,28 +146,32 @@ public abstract class State
     protected virtual void LStickInput(Vector2 v2) { }
     protected virtual void RStickInput(Vector2 v2) { }
     protected virtual void ClickedOn(GameObject go) { }
-    protected virtual Click Clicked(MouseAction action, Vector3 mousePos)
+    protected virtual void Clicked(MouseAction action, Vector3 mousePos)
     {
-        if (action != MouseAction.LUp) return Click.Down;
+        if (action != MouseAction.LUp) return;// Click.Down;
 
         if (Cam.Io.UICamera.orthographic)
         {
             RaycastHit2D hitUI = Physics2D.Raycast(mousePos, Vector2.zero);
-            if (hitUI.collider != null) { ClickedOn(hitUI.collider.gameObject); return Click.Hit; }
+            if (hitUI.collider != null) { ClickedOn(hitUI.collider.gameObject); return; }// Click.Hit; }
 
             var hit = Physics2D.Raycast(Cam.Io.UICamera.ScreenToWorldPoint(mousePos), Vector2.zero);
-            if (hit.collider != null) { ClickedOn(hit.collider.gameObject); return Click.Hit; }
+            if (hit.collider != null)
+            {
+                ClickedOn(hit.collider.gameObject);
+                return;// Click.Hit;
+            }
 
-            return Click.Up;
+            return;// Click.Up;
         }
 
         else
         {
             var hit = Physics2D.GetRayIntersection(Cam.Io.Camera.ScreenPointToRay(mousePos));
             var hitUI = Physics2D.Raycast(mousePos, Vector2.zero);
-            if (hit.collider != null) { ClickedOn(hit.collider.gameObject); return Click.Hit; }
-            else if (hitUI.collider != null) { ClickedOn(hitUI.collider.gameObject); return Click.Hit; }
-            return Click.Up;
+            if (hit.collider != null) { ClickedOn(hit.collider.gameObject); return; }// Click.Hit; }
+            else if (hitUI.collider != null) { ClickedOn(hitUI.collider.gameObject); return; }// Click.Hit; }
+            return;// Click.Up;
         }
     }
 
