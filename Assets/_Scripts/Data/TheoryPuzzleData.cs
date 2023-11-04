@@ -7,36 +7,43 @@ using System;
 public class TheoryPuzzleData
 {
     //public int Hints { get; private set; } = 20;
-    //public int HintsRemaining;
-    //public int WrongAnswers;
-    //public int FailedPuzzles;
+    public int CurrentHintsRemaining;
+    public int TotalHintsUsed;
+    public int TotalWrongAnswers;
+    public int TotalFailedPuzzles;
     //public int SolvedPuzzles;
     //public int HighScore;
 
-    private Dictionary<Puzzle, AnswerData[]> _stats;
-    public Dictionary<Puzzle, AnswerData[]> Stats => _stats ??= new();
+    public PuzzleStat[] Stats = new PuzzleStat[] { };
 
-    public void LoadStatsData(Dictionary<Puzzle, AnswerData[]> stats) => _stats = stats;
+    public void LoadStatsData(PuzzleStat[] stats) => Stats = stats;
 
-    public void AddStat(Puzzle puzzle, AnswerData[] score)
+    public void AddStat(PuzzleStat puzzleStat)
     {
-        if (!Stats.ContainsKey(puzzle))
+        bool containsStat = false;
+
+        foreach (PuzzleStat stat in Stats)
         {
-            Stats.TryAdd(puzzle, score);
-        }
-        else
-        {
-            Stats.TryGetValue(puzzle, out AnswerData[] data);
-            AnswerData[] temp = data.MergeWith(score);
-            Stats.Remove(puzzle);
-            Stats.TryAdd(puzzle, temp);
+            if (stat.Specs.Equals(puzzleStat.Specs))
+            {
+                //Debug.Log("Specs equal eachother");
+                containsStat = true;
+                stat.AddStats(puzzleStat);
+                break;
+            }
         }
 
-        foreach (KeyValuePair<Puzzle, AnswerData[]> stat in Stats)
+        if (!containsStat)
         {
-            foreach (AnswerData datum in stat.Value)
-                Debug.Log(stat.Key.PuzzleType + " " + stat.Key.PuzzleGamut.GetType() + " " + datum.ToString());
+            Stats = Stats.MergeWith(puzzleStat);
         }
+
+        //foreach (PuzzleStat stat in Stats)
+        //{
+        //    Debug.Log("Puzzle type: " + stat.Specs.PuzzleType + ", Gamut Type: " + stat.Specs.GamutType +
+        //        ", Hints: " + stat.HintsUsed + ", Wrong: " + stat.WrongAnswers + ", Failed: " + stat.Failed +
+        //        ", Solved: " + stat.Solved);
+        //}
     }
 
     //public string GetHintsRemaining => "hints remaining: " + PuzzleDifficulty switch
@@ -76,32 +83,7 @@ public class TheoryPuzzleData
     //}
 
 }
+
 public enum PuzzleDifficulty { Free, Easy, Hard, Challenge }
 public enum PuzzleType { Aural, Theory }
-//public enum PuzzleGamut { Note, Step, Interval, Triad, InvertedTriad, Scale, Mode, SeventhChord, InvertedSeventhChord }
 public enum AnswerData { Wrong, Skipped, Solved, Hinted }
-
-public readonly struct Puzzle
-{
-    public readonly PuzzleType PuzzleType;
-
-    public readonly object PuzzleGamut;
-
-    public Puzzle(PuzzleType type, object gamut)
-    {
-        PuzzleType = type;
-        PuzzleGamut = gamut;
-    }
-}
-
-
-public static class ArrayUtilities
-{
-    public static T[] MergeWith<T>(this T[] t1, T[] t2)
-    {
-        List<T> temp = new();
-        foreach (T datum in t1) { temp.Add(datum); }
-        foreach (T datum in t2) { temp.Add(datum); }
-        return temp.ToArray();
-    }
-}

@@ -6,27 +6,12 @@ namespace MusicTheory.Arithmetic
 {
     public static class IntervalSystems
     {
-        //public static IntervalEnum GetInterval(this ScaleDegree s1, ScaleDegree s2)
-        //{
-        //    if ((int)s1 > 12 || (int)s2 > 12)
-        //        throw new ArgumentOutOfRangeException(nameof(ScaleDegree), "Scale degree must not be greater than 12");
-        //    int bottom = (int)s1;
-        //    int top = (int)s2;
-        //    if (bottom > top) top += 12;
-        //    return (IntervalEnum)(top - bottom);
-        //}
-
-        //public static IntervalEnum GetInterval(this ScaleDegree i1, Step step)
-        //{
-        //    int bottom = (int)i1;
-        //    int top = (int)step;
-        //    return (IntervalEnum)(bottom + top > 12 ?
-        //        throw new ArgumentOutOfRangeException(nameof(ScaleDegree), "Scale degree must not be greater than 12") :
-        //        bottom + top);
-        //}
-
-        //public static Quantity GetQuantity(this ScaleDegree left, ScaleDegree right) =>
-        //    (QuantityEnum)((int)right - (int)left < (int)right ? (int)left + 7 : (int)left);
+        public static ScaleDegree AsScaleDegree(this Intervals.Interval i)
+        {
+            ScaleDegrees.DegreeEnum.QualityEnum quality = (ScaleDegrees.DegreeEnum.QualityEnum)i.Quality.Enum;
+            ScaleDegrees.DegreeEnum.DegreeEnum degree = (ScaleDegrees.DegreeEnum.DegreeEnum)i.Quantity.Enum;
+            return (quality, degree).FindExactMatch();
+        }
 
         public static Intervals.Quantity Invert(this Intervals.Quantity quantity) => quantity switch
         {

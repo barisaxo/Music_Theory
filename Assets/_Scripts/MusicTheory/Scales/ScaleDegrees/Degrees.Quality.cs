@@ -1,6 +1,7 @@
 ﻿namespace MusicTheory.ScaleDegrees.DegreeEnum
 {
-    public class Quality
+    [System.Serializable]
+    public abstract class Quality : IMusicalElement
     {
         public Quality(QualityEnum @enum) { Enum = @enum; }
         public readonly QualityEnum Enum;
@@ -36,6 +37,16 @@
             _ when e == Augmented => new Augmented(),
             _ when e == Diminished => new Diminished(),
             _ when e == Perfect => new Perfect(),
+            _ => throw new System.ArgumentOutOfRangeException()
+        };
+
+        public static explicit operator QualityEnum(Intervals.QualityEnum e) => e switch
+        {
+            _ when e == Intervals.QualityEnum.Major => new Major(),
+            _ when e == Intervals.QualityEnum.Minor => new Minor(),
+            _ when e == Intervals.QualityEnum.Augmented => new Augmented(),
+            _ when e == Intervals.QualityEnum.Diminished => new Diminished(),
+            _ when e == Intervals.QualityEnum.Perfect => new Perfect(),
             _ => throw new System.ArgumentOutOfRangeException()
         };
     }

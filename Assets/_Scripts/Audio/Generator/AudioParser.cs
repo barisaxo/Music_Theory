@@ -17,11 +17,11 @@ public class AudioParser
 
     public AudioClip GetAudioClipFromKey(KeyboardNoteName key)
     {
-        Debug.Log(key.ToString());
+        //Debug.Log(key.ToString());
         float chordNibStart = 4f * (int)key;
 
         int offset = Mathf.CeilToInt((float)(AC.frequency * chordNibStart));
-        Debug.Log(offset + ", Samples: " + AC.samples);
+        //Debug.Log(offset + ", Samples: " + AC.samples);
         float[] samples = new float[AC.samples];
         AC.GetData(samples, 0);
 

@@ -48,19 +48,32 @@ public class Keyboard
     public bool LockBottomKey;
     public KeyboardKey[] SelectedKeys;
 
-    public virtual void InteractWithKey(GameObject go)
+    //public void InteractWithKey(GameObject go)
+    //{
+    //    foreach (KeyboardKey key in Keys)
+    //    {
+    //        if (key.Go == go)
+    //        {
+    //            Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
+    //            if (LockBottomKey) LockedBottomKey(key);
+    //            else UnlockedBottomKey(key);
+    //            return;
+    //        }
+    //    }
+    //    throw new System.ArgumentOutOfRangeException(go.name + " was not found in Keys!");
+    //}
+
+    public void InteractWithKey(KeyboardKey key)
     {
-        foreach (KeyboardKey key in Keys)
-        {
-            if (key.Go == go)
-            {
-                Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
-                if (LockBottomKey) LockedBottomKey(key);
-                else UnlockedBottomKey(key);
-                return;
-            }
-        }
-        throw new System.ArgumentOutOfRangeException(go.name + " was not found in Keys!");
+        Audio.AudioManager.Io.KBAudio.PlayNote(AudioParser.GetAudioClipFromKey(key.KeyboardNoteName));
+        if (LockBottomKey) LockedBottomKey(key);
+        else UnlockedBottomKey(key);
+    }
+
+    public KeyboardKey IdentifyKey(GameObject go)
+    {
+        foreach (KeyboardKey key in Keys) if (key.Go == go) return key;
+        throw new System.ArgumentOutOfRangeException(go.name + " is not a key");
     }
 
     private void UnlockedBottomKey(KeyboardKey key)

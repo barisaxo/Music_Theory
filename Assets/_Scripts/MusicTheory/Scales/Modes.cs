@@ -4,12 +4,14 @@ namespace MusicTheory.Modes
 {
     public enum ModeDegree { Prime, Second, Third, Fourth, Fifth, Sixth, Seventh }
 
-    public class Mode
+    [System.Serializable]
+    public abstract class Mode : IMusicalElement
     {
         public Mode(ScaleEnum parentScale, ModeDegreeEnum mode, string name) { ParentScale = parentScale; Enum = mode; Name = name; }
-        public readonly string Name;
+        public string Name { get; }
         public readonly ScaleEnum ParentScale;
         public readonly ModeDegreeEnum Enum;
+        public int Id => Enum.Id;
     }
 
     public class Ionian : Mode { public Ionian() : base(ScaleEnum.Major, ModeDegreeEnum.Prime, nameof(Ionian)) { } }

@@ -1,14 +1,15 @@
 
 namespace MusicTheory.Steps
 {
-    public class Step
+    [System.Serializable]
+    public abstract class Step : IMusicalElement
     {
         public Step(StepEnum @enum) { Enum = @enum; }
         public readonly StepEnum Enum;
         public int Id => Enum.Id;
         public string Name => Enum.Name;
 
-        public static explicit operator Step(int i) => new((StepEnum)i);
+        //public static explicit operator Step(int i) => new((StepEnum)i);
         public static explicit operator StepEnum(Step i) => i.Enum;
         public static explicit operator int(Step i) => i.Enum.Id;
     }

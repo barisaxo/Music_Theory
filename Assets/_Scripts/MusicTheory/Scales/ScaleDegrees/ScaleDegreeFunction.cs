@@ -1,9 +1,12 @@
 ﻿namespace MusicTheory.ScaleDegrees
 {
-    public abstract class Function
+    [System.Serializable]
+    public abstract class Function : IMusicalElement
     {
         public Function(FunctionEnum @enum) { Enum = @enum; }
         public readonly FunctionEnum Enum;
+        public string Name => Enum.Name;
+        public int Id => Enum.Id;
     }
 
     public class FunctionEnum : Enumeration

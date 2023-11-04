@@ -1,6 +1,7 @@
 ﻿namespace MusicTheory.Keys
 {
-    public abstract class Accidental
+    [System.Serializable]
+    public abstract class Accidental : IMusicalElement
     {
         public Accidental(AccidentalEnum @enum) { Enum = @enum; }
         public readonly AccidentalEnum Enum;

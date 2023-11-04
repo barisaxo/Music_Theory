@@ -2,9 +2,8 @@ using UnityEngine;
 using MusicTheory.Arithmetic;
 using MusicTheory.Keys;
 using MusicTheory.Triads;
-using Audio;
 
-public class InvertedTriadPuzzle : IPuzzle<Triad>
+public class InvertedTriadPuzzle : IPuzzle
 {
     public int NumOfNotes => 3;
 
@@ -14,21 +13,23 @@ public class InvertedTriadPuzzle : IPuzzle<Triad>
 
     public bool AllowPlayQuestion => true;
 
-    private readonly Triad _gamut;
-    public Triad Gamut => _gamut;
+    public System.Type GamutType => typeof(Triad);
+    public IMusicalElement Gamut { get; private set; }
+    public Triad Triad => Gamut is Triad triad ? triad : throw new System.ArgumentOutOfRangeException();
 
     private readonly KeyboardNoteName[] _notes;
     public KeyboardNoteName[] Notes => _notes;
-
+    readonly Inversion inversion;
     public string Desc => "Build the <b><i>inverted triad";
 
     private readonly string _question;
     public string Question => _question;
     enum Inversion { first, second }
+    public string Clue => GetChordTones(Triad, inversion);
 
     public InvertedTriadPuzzle()
     {
-        _gamut = Random.Range(0, 4) switch
+        Gamut = Random.Range(0, 4) switch
         {
             2 => new Minor(),
             3 => new Major(),
@@ -37,7 +38,7 @@ public class InvertedTriadPuzzle : IPuzzle<Triad>
             _ => throw new System.ArgumentOutOfRangeException()
         };
 
-        Inversion inversion = Random.value > .5f ? Inversion.first : Inversion.second;
+        inversion = Random.value > .5f ? Inversion.first : Inversion.second;
 
         Key Root = Enumeration.All<KeyEnum>()[Random.Range(0, Enumeration.Length<KeyEnum>())];
         Key Third = Gamut switch
@@ -74,7 +75,7 @@ public class InvertedTriadPuzzle : IPuzzle<Triad>
 
         for (int i = 1; i < Notes.Length; i++) Notes[i] += Notes[i] < Notes[0] ? 12 : 0;
 
-        _question = Gamut.Description + " " + nameof(Triad) + InversionDescription(inversion);
+        _question = Triad.Description + " " + nameof(MusicTheory.Triads.Triad) + InversionDescription(inversion);
     }
 
     string InversionDescription(Inversion inversion) => inversion switch
@@ -82,4 +83,16 @@ public class InvertedTriadPuzzle : IPuzzle<Triad>
         Inversion.first => " in first inversion",
         _ => " in second inversion"
     };
+
+    string GetChordTones(Triad chord, Inversion inversion)
+    {
+        string temp = "";
+        for (int i = 0; i < 3; i++)
+        {
+            int invertedIndex = (i + (int)inversion + 1) % 3;
+            if (invertedIndex == 0) temp += "1  ";
+            else temp += chord.ChordTonesAsIntervals()[invertedIndex - 1].AsScaleDegree().Name + "  ";
+        }
+        return temp;
+    }
 }

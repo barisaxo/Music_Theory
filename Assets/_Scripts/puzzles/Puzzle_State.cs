@@ -3,15 +3,22 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Puzzle_State<TGamut> : State
+public class Puzzle_State : State
 {
     Keyboard Keyboard;
-    readonly IPuzzle<TGamut> Puzzle;
+    readonly IPuzzle Puzzle;
     readonly AudioParser AudioParser = new();
     readonly PuzzleType PuzzleType;
     bool ReadyForNextPuzzle = false;
 
-    public Puzzle_State(IPuzzle<TGamut> puzzle, PuzzleType puzzleType)
+    int WrongAnswers;
+    int HintsUsed;
+    int Skipped;
+    int Failed;
+    int Solved;
+    int Errors;
+
+    public Puzzle_State(IPuzzle puzzle, PuzzleType puzzleType)
     {
         Puzzle = puzzle;
         PuzzleType = puzzleType;
@@ -25,7 +32,7 @@ public class Puzzle_State<TGamut> : State
         //Data.TheoryPuzzleData.ResetHints();
         _ = Question;
         _ = Desc;
-        //_ = Hint;
+        _ = Hint;
         _ = Listen;
         _ = SubmitAnswer;
         _ = Skip;
@@ -48,12 +55,22 @@ public class Puzzle_State<TGamut> : State
 
     protected override void DisengageState()
     {
+        Data.TheoryPuzzleData.AddStat(
+            new PuzzleStat(
+                specs: new PuzzleSpec(PuzzleType, Puzzle),
+                hints: HintsUsed,
+                wrong: WrongAnswers,
+                fail: Failed,
+                solve: Solved,
+                skipped: Skipped,
+                errors: Errors));
+
         Audio.KBAudio.Stop();
         Question.SelfDestruct();
         SubmitAnswer.SelfDestruct();
         Keyboard.SelfDestruct();
         Desc.SelfDestruct();
-        //Hint.SelfDestruct();
+        Hint.SelfDestruct();
         Listen?.SelfDestruct();
         Skip.SelfDestruct();
         Data.SaveTheoryPuzzleData();
@@ -63,7 +80,9 @@ public class Puzzle_State<TGamut> : State
     {
         if (ReadyForNextPuzzle && action == MouseAction.LUp)
         {
-            FadeToState(PuzzleSelector.WeightedRandomPuzzleState(Data.TheoryPuzzleData));
+            //FadeToState(PuzzleSelector.WeightedRandomPuzzleState(Data.TheoryPuzzleData));
+
+            FadeToState(new Puzzle_State(new InvertedSeventhChordPuzzle(), PuzzleType.Theory));
 
             //FadeToState(new Puzzle_State<MusicTheory.SeventhChords.SeventhChord>(new InvertedSeventhChordPuzzle(), RandPuzzleType()));
             //PuzzleType RandPuzzleType() => UnityEngine.Random.value > .5f ? PuzzleType.Theory : PuzzleType.Aural;
@@ -77,14 +96,19 @@ public class Puzzle_State<TGamut> : State
     {
         if (go.transform.IsChildOf(Keyboard.Parent.transform))
         {
-            Keyboard.InteractWithKey(go);
+            KeyboardKey key = Keyboard.IdentifyKey(go);
+            Keyboard.InteractWithKey(key);
+
+            bool containsKey = true;
+            foreach (KeyboardNoteName note in Puzzle.Notes) if (note == key.KeyboardNoteName) { containsKey = true; break; }
+            if (!containsKey) Errors++;
         }
 
         else if (go.transform.IsChildOf(Question.GO.transform) && Puzzle.AllowPlayQuestion)
         {
             //if (DataManager.Io.TheoryPuzzleData.HintsRemaining <= 0) return;
             //DataManager.Io.TheoryPuzzleData.HintsRemaining--;
-
+            HintsUsed++;
             Audio.KBAudio.PlayNotes(QuestionClips(), null, Puzzle.QuestionPlaybackMode);
         }
 
@@ -93,6 +117,7 @@ public class Puzzle_State<TGamut> : State
             if (AllNotesCorrect())
             {
                 //Data.TheoryPuzzleData.SolvedPuzzles++;
+                Solved++;
                 Question.SetTextString(Puzzle.Question).SetImageColor(Color.clear);
                 Audio.KBAudio.PlayNotes(QuestionClips(), EndPuzzleCallback, Puzzle.AnswerPlaybackMode);
                 Listen.GO.SetActive(false);
@@ -105,13 +130,13 @@ public class Puzzle_State<TGamut> : State
 
             else
             {
+                WrongAnswers++;
                 //if (DataManager.Io.TheoryPuzzleData.PuzzleDifficulty == PuzzleDifficulty.Challenge &&
                 //    DataManager.Io.TheoryPuzzleData.HintsRemaining == 0)
                 //{
                 //    SetStateDirectly(new DialogStart_State(new StartPuzzle_Dialogue()));
                 //}
 
-                //DataManager.Io.TheoryPuzzleData.WrongAnswers++;
                 //DataManager.Io.TheoryPuzzleData.HintsRemaining--;
 
                 //if (DataManager.Io.TheoryPuzzleData.HintsRemaining < 0)
@@ -124,15 +149,13 @@ public class Puzzle_State<TGamut> : State
 
         else if (go.transform.IsChildOf(Listen.GO.transform))
         {
-            //if (Data.TheoryPuzzleData.HintsRemaining > 0)
-            //{
-            //Data.TheoryPuzzleData.HintsRemaining--;
+            HintsUsed++;
             Audio.KBAudio.PlayNotes(SelectedClips(), null, Puzzle.ListenPlaybackMode);
-            //}
         }
 
         else if (go.transform.IsChildOf(Skip.GO.transform))
         {
+            Skipped++;
             FadeToState(PuzzleSelector.WeightedRandomPuzzleState(Data.TheoryPuzzleData));
         }
 
@@ -146,9 +169,6 @@ public class Puzzle_State<TGamut> : State
         ReadyForNextPuzzle = true;
         Desc.GO.SetActive(true);
         Desc.SetTextString("tap anywhere to continue...");
-
-        Data.TheoryPuzzleData.AddStat(new global::Puzzle(PuzzleType, Puzzle.Gamut), new AnswerData[1] { AnswerData.Solved });
-
     }
 
     bool AllNotesSelected()
@@ -255,16 +275,16 @@ public class Puzzle_State<TGamut> : State
         .AllowWordWrap(false)
         .SetTMPRectPivot(0, .5f);
 
-    //private Card _hint;
-    //public Card Hint => _hint ??= new Card(nameof(Hint), null)
-    //    .SetTextString(DataManager.Io.TheoryPuzzleData.GetHintsRemaining)
-    //    .SetTMPPosition(new Vector2(0, Cam.UIOrthoY - 1.75f))
-    //    .SetFontScale(.5f, .5f)
-    //    .AutoSizeFont(true)
-    //    .SetTextAlignment(TMPro.TextAlignmentOptions.Center)
-    //    .AutoSizeTextContainer(true)
-    //    .SetTextColor(Color.grey)
-    //    .AllowWordWrap(false);
+    private Card _hint;
+    public Card Hint => _hint ??= new Card(nameof(Hint), null)
+        .SetTextString(Puzzle.Clue)
+        .SetTMPPosition(new Vector2(0, Cam.UIOrthoY - 1.75f))
+        .SetFontScale(.5f, .5f)
+        .AutoSizeFont(true)
+        .SetTextAlignment(TMPro.TextAlignmentOptions.Center)
+        .AutoSizeTextContainer(true)
+        .SetTextColor(Color.grey)
+        .AllowWordWrap(false);
 
     private Card _question;
     public Card Question => _question ??= new Card(nameof(Question), null)

@@ -1,6 +1,6 @@
 namespace MusicTheory.Functions
 {
-    public class Function
+    public abstract class Function
     {
 
 

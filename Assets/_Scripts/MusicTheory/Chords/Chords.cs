@@ -5,7 +5,8 @@ using MusicTheory.Keys;
 
 namespace MusicTheory.Chords
 {
-    public abstract class Chord
+    [System.Serializable]
+    public abstract class Chord : IMusicalElement
     {
         //public Chord(Key key, Scale scale, ScaleDegree rootScaleDegree)
         //{

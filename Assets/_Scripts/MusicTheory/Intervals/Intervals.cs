@@ -2,7 +2,8 @@ using System;
 
 namespace MusicTheory.Intervals
 {
-    public class Interval
+    [System.Serializable]
+    public abstract class Interval : IMusicalElement
     {
         public Interval(IntervalEnum @enum) { Enum = @enum; }
         public readonly IntervalEnum Enum;

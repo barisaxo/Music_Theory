@@ -4,7 +4,8 @@ using UnityEngine;
 
 namespace MusicTheory.SeventhChords
 {
-    public abstract class SeventhChord
+    [System.Serializable]
+    public abstract class SeventhChord : IMusicalElement
     {
         public SeventhChord(SeventhChordEnum @enum) { Enum = @enum; }
         public readonly SeventhChordEnum Enum;

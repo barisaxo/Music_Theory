@@ -1,9 +1,12 @@
 ﻿namespace MusicTheory.Chords
 {
-    public class ChordTone
+    [System.Serializable]
+    public abstract class ChordTone : IMusicalElement
     {
         public ChordTone(ChordToneEnum @enum) { Enum = @enum; }
         public ChordToneEnum Enum { get; private set; }
+        public string Name => Enum.Name;
+        public int Id => Enum.Id;
     }
 
     public class Root : ChordTone { public Root() : base(ChordToneEnum.Root) { } }

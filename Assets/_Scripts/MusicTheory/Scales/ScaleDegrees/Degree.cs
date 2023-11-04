@@ -1,6 +1,7 @@
 ﻿namespace MusicTheory.ScaleDegrees.DegreeEnum
 {
-    public abstract class Degree
+    [System.Serializable]
+    public abstract class Degree : IMusicalElement
     {
         public Degree(DegreeEnum @enum) => DegreeEnum = @enum;
         public readonly DegreeEnum DegreeEnum;
@@ -42,6 +43,17 @@
             _ => throw new System.ArgumentOutOfRangeException(e.ToString())
         };
 
+        public static explicit operator DegreeEnum(Intervals.QuantityEnum e) => e switch
+        {
+            _ when e == Intervals.QuantityEnum.Unison => _1,
+            _ when e == Intervals.QuantityEnum.Second => _2,
+            _ when e == Intervals.QuantityEnum.Third => _3,
+            _ when e == Intervals.QuantityEnum.Fourth => _4,
+            _ when e == Intervals.QuantityEnum.Fifth => _5,
+            _ when e == Intervals.QuantityEnum.Sixth => _6,
+            _ when e == Intervals.QuantityEnum.Seventh => _7,
+            _ => throw new System.ArgumentOutOfRangeException(e.ToString())
+        };
     }
 
 }

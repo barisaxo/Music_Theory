@@ -4,7 +4,7 @@ using MusicTheory.Keys;
 using MusicTheory.Steps;
 using UnityEngine;
 
-public class StepsPuzzle : IPuzzle<Step>
+public class StepsPuzzle : IPuzzle
 {
     public int NumOfNotes => 2;
 
@@ -15,8 +15,9 @@ public class StepsPuzzle : IPuzzle<Step>
     public bool PlayOnEngage => false;
     public bool AllowPlayQuestion => true;
 
-    private readonly Step _gamut;
-    public Step Gamut => _gamut;
+    public System.Type GamutType => typeof(Step);
+    public IMusicalElement Gamut { get; private set; }
+    public Step Step => Gamut is Step step ? step : throw new System.ArgumentNullException();
 
     private readonly KeyboardNoteName[] _notes;
     public KeyboardNoteName[] Notes => _notes;
@@ -25,10 +26,10 @@ public class StepsPuzzle : IPuzzle<Step>
 
     private readonly string _question;
     public string Question => _question;
-
+    public string Clue => "Half = +1, Whole = +2, Augmented = +3";
     public StepsPuzzle()
     {
-        _gamut = Random.Range(0, 3) switch
+        Gamut = Random.Range(0, 3) switch
         {
             1 => new Whole(),
             0 => new Half(),
@@ -42,11 +43,11 @@ public class StepsPuzzle : IPuzzle<Step>
 
         Notes[0] = Root.GetKeyboardNoteName();
 
-        Notes[1] = Root.GetKeyAbove(Gamut.AsInterval()).GetKeyboardNoteName();
+        Notes[1] = Root.GetKeyAbove(Step.AsInterval()).GetKeyboardNoteName();
 
         Notes[1] += Notes[1] < Notes[0] ? 12 : 0;
 
-        _question = Gamut.Name + " " + nameof(Step);
+        _question = Gamut.Name + " " + nameof(MusicTheory.Steps.Step);
     }
 
 }

@@ -6,7 +6,8 @@ using MusicTheory.Keys;
 
 namespace MusicTheory.RomanNumerals
 {
-    public class RomanNumeral
+    [System.Serializable]
+    public abstract class RomanNumeral : IMusicalElement
     {
         public RomanNumeral(RomanEnum @enum) => Enum = @enum;
         public RomanEnum Enum;

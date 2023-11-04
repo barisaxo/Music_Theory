@@ -6,7 +6,7 @@ using MusicTheory.Scales;
 using MusicTheory.Keys;
 using MusicTheory.Steps;
 
-public class ScalePuzzle : IPuzzle<Scale>
+public class ScalePuzzle : IPuzzle
 {
     readonly int _numOfNotes;
     public int NumOfNotes => _numOfNotes;
@@ -18,8 +18,9 @@ public class ScalePuzzle : IPuzzle<Scale>
     public bool PlayOnEngage => false;
     public bool AllowPlayQuestion => true;
 
-    private readonly Scale _gamut;
-    public Scale Gamut => _gamut;
+    public System.Type GamutType => typeof(Scale);
+    public IMusicalElement Gamut { get; private set; }
+    public Scale Scale => Gamut is Scale scale ? scale : throw new System.ArgumentNullException();
 
     private readonly KeyboardNoteName[] _notes;
     public KeyboardNoteName[] Notes => _notes;
@@ -29,10 +30,12 @@ public class ScalePuzzle : IPuzzle<Scale>
     private readonly string _question;
     public string Question => _question;
 
+    public string Clue => GetSteps();
+
     public ScalePuzzle()
     {
-        _gamut = WeightedRandomScale();
-        _numOfNotes = Gamut.ScaleDegrees.Length + 1;
+        Gamut = WeightedRandomScale();
+        _numOfNotes = Scale.ScaleDegrees.Length + 1;
         _notes = new KeyboardNoteName[NumOfNotes];
 
         KeyboardNoteName Root = ((Key)Enumeration.All<KeyEnum>()[Random.Range(0, Enumeration.Length<KeyEnum>())]).GetKeyboardNoteName();
@@ -42,24 +45,20 @@ public class ScalePuzzle : IPuzzle<Scale>
 
         for (int i = 1; i < Notes.Length - 1; i++)
         {
-            Notes[i] = Root.NoteNameToKey().GetKeyAbove(Gamut.ScaleDegrees[i].AsInterval()).GetKeyboardNoteName();
+            Notes[i] = Root.NoteNameToKey().GetKeyAbove(Scale.ScaleDegrees[i].AsInterval()).GetKeyboardNoteName();
             Notes[i] += Notes[i] < Root ? 12 : 0;
-            Debug.Log(Notes[i].ToString());
+            //Debug.Log(Notes[i].ToString());
         }
 
-        _question = Gamut.Description.SpaceAfterCap() + " " + nameof(Scale) + GetSteps();
+        _question = Scale.Description.SpaceAfterCap() + " " + nameof(MusicTheory.Scales.Scale);
     }
 
     private string GetSteps()
     {
         string temp = "\n";
-        foreach (Step s in Gamut.Steps)
-        {
-            temp += s.Name + " ";
-        }
+        foreach (Step s in Scale.Steps) temp += s.Name + " ";
         return temp;
     }
-
 
     private Scale WeightedRandomScale()
     {

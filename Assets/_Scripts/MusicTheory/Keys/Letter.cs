@@ -1,6 +1,7 @@
 ﻿namespace MusicTheory.Keys
 {
-    public abstract class Letter
+    [System.Serializable]
+    public abstract class Letter : IMusicalElement
     {
         public Letter(LetterEnum @enum) { Enum = @enum; }
         public readonly LetterEnum Enum;

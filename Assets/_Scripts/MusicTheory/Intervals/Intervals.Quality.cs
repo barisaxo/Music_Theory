@@ -2,7 +2,8 @@
 
 namespace MusicTheory.Intervals
 {
-    public class Quality
+    [System.Serializable]
+    public abstract class Quality : IMusicalElement
     {
         public Quality(QualityEnum @enum) { Enum = @enum; }
         public readonly QualityEnum Enum;

@@ -1,6 +1,7 @@
 ﻿namespace MusicTheory.Triads
 {
-    public abstract class Triad
+    [System.Serializable]
+    public abstract class Triad : IMusicalElement
     {
         public Triad(TriadEnum @enum) { Enum = @enum; }
         public readonly TriadEnum Enum;
@@ -29,6 +30,7 @@
             _ when e == TriadEnum.Minor => new Minor(),
             _ when e == TriadEnum.Augmented => new Augmented(),
             _ when e == TriadEnum.Diminished => new Diminished(),
+            _ => throw new System.ArgumentOutOfRangeException(e.ToString())
         };
     }
 

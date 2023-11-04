@@ -68,6 +68,13 @@ namespace MusicTheory.Arithmetic
             return newInterval;
         }
 
+
+        public static ScaleDegrees.ScaleDegreeEnum FindExactMatch(this (ScaleDegrees.DegreeEnum.QualityEnum quality, ScaleDegrees.DegreeEnum.DegreeEnum degree) i)
+        {
+            foreach (var e in Enumeration.All<ScaleDegrees.ScaleDegreeEnum>()) if (e.Degree.DegreeEnum == i.degree && e.Quality == i.quality) return e;
+            throw new System.ArgumentOutOfRangeException(i.ToString());
+        }
+
         public static RomanNumerals.RomanNumeral ToRoman(this ScaleDegrees.ScaleDegree scaleDegree) =>
             scaleDegree switch
             {

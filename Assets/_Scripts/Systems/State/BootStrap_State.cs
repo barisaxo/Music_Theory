@@ -36,8 +36,8 @@ public class BootStrap_State : State
         }
 
         Data.TheoryPuzzleData.PuzzleDifficulty = PuzzleDifficulty.Free;
-        FadeToState(PuzzleSelector.WeightedRandomPuzzleState(Data.TheoryPuzzleData));
-
+        //FadeToState(PuzzleSelector.WeightedRandomPuzzleState(Data.TheoryPuzzleData));
+        FadeToState(new Puzzle_State(new InvertedSeventhChordPuzzle(), PuzzleType.Theory));
     }
 
     PuzzleType RandPuzzleType => UnityEngine.Random.value > .5f ? PuzzleType.Theory : PuzzleType.Aural;

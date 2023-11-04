@@ -5,7 +5,8 @@ using MusicTheory.Modes;
 
 namespace MusicTheory.Scales
 {
-    public abstract class Scale
+    [Serializable]
+    public class Scale : IMusicalElement
     {
         public Scale(ScaleEnum @enum, Mode[] modes, Step[] steps, ScaleDegree[] degrees)
         {
@@ -28,6 +29,7 @@ namespace MusicTheory.Scales
     }
 
     #region SCALES
+
     public class Major : Scale
     {
         public Major() : base(

@@ -3,7 +3,8 @@ using MusicTheory.ScaleDegrees;
 
 namespace MusicTheory.Keys
 {
-    public abstract class Key
+    [System.Serializable]
+    public abstract class Key : IMusicalElement
     {
         public Key(KeyEnum key) { Enum = key; }
         public readonly KeyEnum Enum;

@@ -3,7 +3,8 @@ using MusicTheory.ScaleDegrees.DegreeEnum;
 
 namespace MusicTheory.ScaleDegrees
 {
-    public class ScaleDegree
+    [System.Serializable]
+    public abstract class ScaleDegree : IMusicalElement
     {
         public ScaleDegree(ScaleDegreeEnum degree) { Enum = degree; }
         public readonly ScaleDegreeEnum Enum;
@@ -46,7 +47,6 @@ namespace MusicTheory.ScaleDegrees
 
         public readonly Quality Quality;
         public readonly Degree Degree;
-
         public readonly string Description;
 
         public static ScaleDegreeEnum _1 = new(0, "1", "Tonic", new DegreeEnum._1(), new Perfect());
@@ -88,7 +88,6 @@ namespace MusicTheory.ScaleDegrees
             _ when s == _7 => new _7(),
             _ => throw new System.ArgumentOutOfRangeException()
         };
-
 
     }
 
